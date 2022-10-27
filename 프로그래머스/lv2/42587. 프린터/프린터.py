@@ -1,24 +1,21 @@
 from collections import deque
-import heapq
 
 def solution(priorities, location):
     answer = 0
-    priorities_heap = []
-    printers = deque()
+    que = deque([(idx, priority) for (idx, priority) in enumerate(priorities)])
     n = len(priorities)
-    for idx in range(n):
-        heapq.heappush(priorities_heap, -priorities[idx])
-        printers.append([priorities[idx], idx])
-    find_value = priorities[location]
-    while printers:
-        printer = printers[0]
-        printers.popleft()
-        if -priorities_heap[0] > printer[0]:
-            printers.append(printer)
-        elif -priorities_heap[0] == printer[0]:
-            answer += 1
-            heapq.heappop(priorities_heap)
-            if location == printer[1]:
+    while que:
+        flag = True
+        cur_loc = que[0]
+        que.popleft()
+        for idx in range(n):
+            if priorities[idx] > cur_loc[1]:
+                que.append(cur_loc)
+                flag = False
                 break
-        
+        if flag:
+            priorities[cur_loc[0]] = -1
+            answer += 1
+            if cur_loc[0] == location:
+                break
     return answer
