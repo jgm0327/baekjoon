@@ -4,7 +4,8 @@ def solution(queue1, queue2):
     answer = 0
     queue1, queue2 = deque(queue1), deque(queue2)
     sum1, sum2 = sum(queue1), sum(queue2)
-    flag = False
+    flag = True
+    
     for _ in range(300000):
         while queue1 and sum1 > sum2:
             data = queue1.popleft()
@@ -19,11 +20,10 @@ def solution(queue1, queue2):
             sum1, sum2 = sum1 + data, sum2 - data
             
         if sum1 == sum2:
-            flag = True
+            flag = False
             break
         if not sum1 or not sum2:
             break
-            
-    if not flag:
+    if flag:
         answer = -1
     return answer
