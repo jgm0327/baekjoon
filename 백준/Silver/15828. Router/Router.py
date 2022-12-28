@@ -1,9 +1,10 @@
 import sys
+from collections import deque
 
 input = sys.stdin
 
 size = int(input.readline())
-que = []
+que = deque()
 cnt = 0
 
 while True:
@@ -12,7 +13,7 @@ while True:
         break
     if packet == 0:
         if que:
-            que.pop(0)
+            que.popleft()
         cnt -= 1
         continue
     if size <= cnt:
