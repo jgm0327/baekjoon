@@ -16,11 +16,9 @@ for i in range(1, n):
     elif dp[i - 1] > num_list[i]:
         asc += 1
         desc = 1
-        max_value = max(max_value, desc, asc)
     else:
         asc = 1
         desc += 1
-        max_value = max(max_value, asc, desc)
     dp[i] = num_list[i]
-    max_value = max(asc, desc, max_value)
+    max_value = max(max_value, asc, desc)
 print(max_value)
