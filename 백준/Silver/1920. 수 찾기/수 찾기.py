@@ -1,17 +1,11 @@
 import sys
 
+input = sys.stdin
 
-def solution():
-    n = int(sys.stdin.readline())
-    s = list(sys.stdin.readline().split())
-    numbers = {}.fromkeys(s, 0)
-    m = int(sys.stdin.readline())
-    targets = list(sys.stdin.readline().split())
-    for target in targets:
-        if numbers.get(target) != None:
-            print(1)
-        else:
-            print(0)
+n = int(input.readline())
+numbers = {}.fromkeys(list(map(int, input.readline().split())), True)
+m = int(input.readline())
+targets = list(map(int, input.readline().split()))
 
-
-solution()
+for target in targets:
+    print(1 if numbers.get(target) is not None else 0)
