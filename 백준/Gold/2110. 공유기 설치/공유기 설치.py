@@ -3,22 +3,23 @@ import sys
 input = sys.stdin
 
 n, m = map(int, input.readline().split())
-houses = sorted([int(input.readline()) for _ in range(n)])
-start, end = 1, houses[-1] - houses[0]
-answer = 0
+distances = sorted([int(input.readline()) for _ in range(n)])
 
+start, end = 1, distances[-1] - distances[0]
+
+answer = 0
 while start <= end:
     mid = (start + end) // 2
-    tmp = houses[0]
+    temp = distances[0]
     cnt = 1
     for i in range(1, n):
-        if houses[i] >= tmp + mid:
+        if distances[i] >= temp + mid:
+            temp = distances[i]
             cnt += 1
-            tmp = houses[i]
+
     if cnt >= m:
-        answer = mid
         start = mid + 1
+        answer = mid
     else:
         end = mid - 1
-
 print(answer)
