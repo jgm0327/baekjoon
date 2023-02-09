@@ -1,16 +1,12 @@
-import sys
+from sys import stdin
 
-input = sys.stdin
-
-n = int(input.readline())
-distances = list(map(int, input.readline().split()))
-gas_stations = list(map(int, input.readline().split()))
-
-cur = gas_stations[0]
-answer = cur * distances[0]
-for idx, distance in enumerate(distances[1:]):
-    if cur * distance > gas_stations[idx + 1] * distance:
-        cur = gas_stations[idx + 1]
-    answer += cur * distance
-
+n = int(stdin.readline())
+distances = list(map(int, stdin.readline().split()))
+gas_stations = list(map(int, stdin.readline().split()))
+answer = distances[0] * gas_stations[0]
+temp = gas_stations[0]
+for distance, station in zip(distances[1:], gas_stations[1:n-1]):
+    temp = temp if temp < station else station
+    answer += temp * distance
 print(answer)
+
