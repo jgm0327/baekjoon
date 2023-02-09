@@ -1,27 +1,8 @@
-import sys
-import heapq
+from sys import stdin
 
-
-def solution():
-    read = sys.stdin
-
-    n = int(read.readline())
-    result = 0
-    costs = []
-
-    for _ in range(n):
-        heapq.heappush(costs, -int(read.readline()))
-
-    while costs:
-        for i in range(2):
-            result += -costs[0]
-            if costs:
-                heapq.heappop(costs)
-            if len(costs) == 0:
-                print(result)
-                return
-        heapq.heappop(costs)
-    print(result)
-
-
-solution()
+n = int(stdin.readline())
+dairy_products = sorted(list(int(stdin.readline()) for _ in range(n)), reverse=True)
+answer = 0
+for i in range(0, n, 3):
+    answer += sum(dairy_products[i:i+2])
+print(answer)
