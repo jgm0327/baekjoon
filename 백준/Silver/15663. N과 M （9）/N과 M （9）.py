@@ -1,32 +1,29 @@
-import sys
+from sys import stdin
 
-n, m = map(int, sys.stdin.readline().split())
-number_list = list(map(int, sys.stdin.readline().split()))
-number_list.sort()
-digit = {}
+n, m = map(int, stdin.readline().split())
+numbers = sorted(stdin.readline().rstrip().split(), key=lambda x: int(x))
+count = {}.fromkeys(numbers, 0)
+visit_result = {}
+visit_idx = [False] * n
 
-
-def dfs(depth: int, p: list, idx_list: list):
-    global n, m, number_list, digit
-
+def backtracking(depth: int, path: list) -> None:
+    global n, m, numbers, count
     if depth == m:
-        temp = ''.join(map(str, p))
-        if digit.get(temp) != None:
-            return
-
-        for i in range(m):
-            print(p[i], end=' ')
-        print()
-        digit[temp] = 1
+        result = ' '.join(path)
+        if visit_result.get(result) is None:
+            print(result)
+        visit_result[result] = True
         return
 
-    for i in range(len(number_list)):
-        if i not in idx_list:
-            p[depth] = number_list[i]
-            idx_list.append(i)
-            dfs(depth + 1, p, idx_list)
-            idx_list.pop()
-            p[depth] = 0
+    for idx, number in enumerate(numbers):
+        if count[number] >= m or visit_idx[idx]:
+            continue
+        count[number] += 1
+        visit_idx[idx] = True
+        path.append(number)
+        backtracking(depth + 1, path)
+        path.pop()
+        visit_idx[idx] = False
+        count[number] -= 1
 
-
-dfs(0, [0] * (n + 2), [])
+backtracking(0, [])
