@@ -1,43 +1,45 @@
-import sys
+from sys import stdin, setrecursionlimit
 
-input = sys.stdin
+n = int(stdin.readline())
+m = int(stdin.readline())
 
-n = int(input.readline())
-m = int(input.readline())
-graph = []
-parents = [i for i in range(n)]
-
-for _ in range(n):
-    graph.append(list(map(int, input.readline().split())))
-
-cities = list(map(int, input.readline().split()))
+cities =[[0]] + [[0]+list(map(int, stdin.readline().split())) for _ in range(n)]
+plan = list(map(int, stdin.readline().split()))
+parents = {}
+rank = {}
+for i in range(1, n+1):
+    parents[i] = i
+    rank[i] = 1
 
 
-def find(x: int) -> int:
+def find_parent(x: int) -> int:
     global parents
-    if parents[x] == x:
+    if x == parents[x]:
         return x
-    parents[x] = find(parents[x])
+    parents[x] = find_parent(parents[x])
     return parents[x]
 
 
-def union(u: int, v: int) -> None:
-    global parents
-    u = find(u)
-    v = find(v)
-    if u == v:
-        return
-    parents[u] = v
+def union(x: int, y: int) -> None:
+    global ranks, parents
+    xp = find_parent(x)
+    yp = find_parent(y)
 
-for i in range(n):
-    for j in range(n):
-        if graph[i][j]:
-            union(j, i)
+    if rank[xp] < rank[yp]:
+        xp, yp = yp, xp
+    if rank[xp] == rank[yp]:
+        rank[xp] += 1
+    parents[yp] = xp
 
-start = cities[0]
-for city in cities[1:]:
-    if find(parents[start - 1]) != find(parents[city - 1]):
-        print('NO')
-        exit(0)
-    start = city
-print('YES')
+
+for i in range(1, n + 1):
+    for j in range(1, n + 1):
+        if cities[i][j] and find_parent(i) != find_parent(j):
+            union(i, j)
+
+answer = 'YES'
+for i in range(m - 1):
+    if find_parent(plan[i]) != find_parent(plan[i+1]):
+        answer = 'NO'
+        break
+print(answer)
