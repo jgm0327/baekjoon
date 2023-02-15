@@ -6,10 +6,6 @@ board = [list(map(int, stdin.readline().split())) for _ in range(n)]
 moves = [list(map(int, stdin.readline().split())) for _ in range(m)]
 
 # 구름 이동하는 기능
-def is_in(y, x) -> bool:
-    global n
-    return 0 <= y < n and 0 <= x < n
-
 def move_cloud(dy, dx) -> None:
     global clouds, visit
     N = len(clouds)
@@ -22,11 +18,11 @@ def move_cloud(dy, dx) -> None:
 
 # 물복사 기능
 def water_copy():
-    global board, dy, dx, clouds
+    global board, dy, dx, clouds, n
     for y, x in clouds:
         for i in range(2, 9, 2):
             ny, nx = dy[i] + y, dx[i] + x
-            if is_in(ny, nx) and board[ny][nx]:
+            if 0 <= ny < n and 0 <= nx < n and board[ny][nx]:
                 board[y][x] += 1
     
 
