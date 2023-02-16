@@ -2,12 +2,12 @@ from sys import stdin
 from collections import deque
 
 n, m = map(int, stdin.readline().split())
-num_list = deque([data for data in range(1, n + 1)])
+num_list = [data for data in range(1, n+1)]
+
+idx = 0
 answer = []
 for _ in range(n):
-    for i in range(m - 1):
-        data = num_list.popleft()
-        num_list.append(data)
-    answer.append(str(num_list.popleft()))
-    
+    idx = (idx + m - 1) % n
+    answer.append(str(num_list.pop(idx)))
+    n -= 1
 print('<%s>' % ', '.join(answer))
