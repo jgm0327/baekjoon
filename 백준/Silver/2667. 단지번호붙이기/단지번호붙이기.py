@@ -29,8 +29,8 @@ for i in range(n):
     for j in range(n):
         if not visit[i][j] and building[i][j] == '1':
             visit[i][j] = True
-            answer.append(str(bfs(i, j)))
+            answer.append(bfs(i, j))
 
-answer.sort(key=lambda x: int(x))
 print(len(answer))
-print('\n'.join(answer))
+for data in sorted(answer):
+    print(data)
