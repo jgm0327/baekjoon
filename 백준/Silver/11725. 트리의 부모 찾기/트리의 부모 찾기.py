@@ -1,33 +1,28 @@
-import sys
+from sys import stdin
 from collections import deque
 
-n = int(sys.stdin.readline())
-
+n = int(stdin.readline())
 graph = [[] for _ in range(n + 1)]
-
 for _ in range(n - 1):
-    sour, des = map(int, sys.stdin.readline().split())
+    sour, des = map(int, stdin.readline().split())
     graph[sour].append(des)
     graph[des].append(sour)
 
 
 def bfs() -> list:
     global graph, n
-    que = deque()
-    que.append(1)
-    parent_list = [-1] * (n + 1)
+    visit = [False] * (n + 1)
+    visit[1] = True
+    que = deque([1])
+    parents = [''] * (n + 1)
 
     while que:
-        parent = que.popleft()
+        sour = que.popleft()
+        for des in graph[sour]:
+            if not visit[des]:
+                visit[des] = True
+                parents[des] = str(sour)
+                que.append(des)
+    return parents[2:]
 
-        for child in graph[parent]:
-            if parent_list[child] == -1:
-                que.append(child)
-                parent_list[child] = parent
-
-    return parent_list
-
-
-answer = bfs()
-for data in answer[2:]:
-    print(data)
+print('\n'.join(bfs()), end='')
