@@ -11,16 +11,13 @@ for _ in range(n - 1):
 
 def bfs() -> list:
     global graph, n
-    visit = [False] * (n + 1)
-    visit[1] = True
     que = deque([1])
     parents = [''] * (n + 1)
 
     while que:
         sour = que.popleft()
         for des in graph[sour]:
-            if not visit[des]:
-                visit[des] = True
+            if parents[des] == '':
                 parents[des] = str(sour)
                 que.append(des)
     return parents[2:]
