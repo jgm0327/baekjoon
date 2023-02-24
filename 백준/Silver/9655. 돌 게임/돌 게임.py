@@ -1,7 +1,1 @@
-from sys import stdin
-
-n = int(stdin.readline())
-if n % 2 == 1:
-    print('SK')
-else:
-    print('CY')
+print('SK' if int(input()) % 2 else 'CY')
