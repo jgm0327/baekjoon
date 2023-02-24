@@ -1,10 +1,10 @@
-# [Silver IV] 조합 - 2407 
+# [Silver III] 조합 - 2407 
 
 [문제 링크](https://www.acmicpc.net/problem/2407) 
 
 ### 성능 요약
 
-메모리: 30840 KB, 시간: 72 ms
+메모리: 31256 KB, 시간: 56 ms
 
 ### 분류
 
