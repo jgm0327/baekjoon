@@ -1,25 +1,24 @@
-import sys
+from sys import stdin
 
-input = sys.stdin
+n, m = map(int, stdin.readline().split())
+houses = sorted([int(stdin.readline()) for _ in range(n)])
 
-n, m = map(int, input.readline().split())
-distances = sorted([int(input.readline()) for _ in range(n)])
-
-start, end = 1, distances[-1] - distances[0]
-
+start, end = 1, (houses[-1] - houses[0])
 answer = 0
 while start <= end:
     mid = (start + end) // 2
-    temp = distances[0]
-    cnt = 1
-    for i in range(1, n):
-        if distances[i] >= temp + mid:
-            temp = distances[i]
-            cnt += 1
+    total = 1
+    tmp = houses[0]
+    for house in houses[1:]:
+        if house < tmp + mid:
+            continue
+        total += 1
+        tmp = house
 
-    if cnt >= m:
+    if total >= m:
         start = mid + 1
-        answer = mid
+        answer = max(answer, mid)
     else:
         end = mid - 1
 print(answer)
+        
