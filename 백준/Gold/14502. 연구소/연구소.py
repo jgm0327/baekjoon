@@ -1,60 +1,55 @@
-import sys
 from collections import deque
+
+n, m = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
+zero = []
+virus = []
+cnt = answer = -3
+
+for i in range(n):
+    for j in range(m):
+        if graph[i][j] == 0:
+            cnt += 1
+            zero.append([i, j])
+        elif graph[i][j] == 2:
+            virus.append([i, j])
 
 
 def bfs():
-    global lab, n, m, virus_zone, safe_zone_cnt, answer
+    global graph, n, m, virus, cnt, answer
     que = deque()
-    dy, dx = [0, 0, 1, -1], [1, -1, 0, 0]
+    for pos in virus:
+        que.append(pos)
     visit = [[False] * m for _ in range(n)]
-    temp = safe_zone_cnt - 3
-
-    for virus in virus_zone:
-        que.append(virus)
-
-    while que:
-        cur_y, cur_x = que.popleft()
-        for idx in range(4):
-            next_y, next_x = cur_y + dy[idx], cur_x + dx[idx]
-            if 0 <= next_y < n and 0 <= next_x < m \
-                    and lab[next_y][next_x] == 0 and not visit[next_y][next_x]:
-                visit[next_y][next_x] = True
-                temp -= 1
-                if answer >= temp:
+    visit[que[0][0]][que[0][1]] = True
+    dy, dx = [1, -1, 0, 0], [0, 0, 1, -1]
+    tmp = cnt
+    
+    while que and tmp:
+        y, x = que.popleft()
+        for i in range(4):
+            ny, nx = dy[i] + y, dx[i] + x
+            if 0 <= ny < n and 0 <= nx < m and not visit[ny][nx] and graph[ny][nx] == 0:
+                que.append([ny, nx])
+                visit[ny][nx] = True
+                tmp -= 1
+                if tmp <= answer:
                     return
-                que.append([next_y, next_x])
-    answer = answer if answer > temp else temp
+    answer = tmp
+    
+    
 
-
-def recur(depth, end):
-    global safe_zone, lab, n
+def recur(depth):
+    global graph, zero
     if depth == 3:
         bfs()
         return
-    for idx in range(end):
-        y, x = safe_zone[idx]
-        if lab[y][x] != 0:
-            continue
-        lab[y][x] = 1
-        recur(depth + 1, end)
-        lab[y][x] = 0
+    for y, x in zero:
+        if graph[y][x] == 0:
+            graph[y][x] = 1
+            recur(depth+1)
+            graph[y][x] = 0
 
 
-n, m = map(int, sys.stdin.readline().split())
-answer = 0
-lab = []
-safe_zone = []
-safe_zone_cnt = 0
-virus_zone = []
-for i in range(n):
-    input_list = list(map(int, sys.stdin.readline().split()))
-    for j in range(m):
-        if input_list[j] == 0:
-            safe_zone.append([i, j])
-            safe_zone_cnt += 1
-        elif input_list[j] == 2:
-            virus_zone.append([i, j])
-    lab.append(input_list)
-
-recur(0, safe_zone_cnt)
+recur(0)
 print(answer)
