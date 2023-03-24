@@ -15,16 +15,8 @@ public class Main {
 		
 		Arrays.sort(arr);
 		
-		if(n % 2 == 1)System.out.println(arr[n/2]);
-		else {
-			int v1 = arr[(n/2) - 1], v2 = arr[n/2];
-			int tmp1 = 0, tmp2 = 0;
-			for(int i=0 ; i<n ; i++) {
-				tmp1 += Math.abs(arr[i] - v1);
-				tmp2 += Math.abs(arr[i] - v2);
-			}
-			System.out.println(tmp1 <= tmp2 ? v1 : v2);
-		}
+		System.out.println(arr[(n-1) / 2]);
+		
 		br.close();
 	}
 }
