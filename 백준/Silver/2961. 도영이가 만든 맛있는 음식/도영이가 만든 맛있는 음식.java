@@ -25,7 +25,8 @@ public class Main {
 	private static void back(int depth, int start, int sour, int bitter) {
 		if(depth == n) return;
 		for(int i=start ; i<n ; i++) {
-			answer = Math.min(answer, Math.abs(sour * ingredients[i][0] - (bitter + ingredients[i][1])));
+			int ts = sour * ingredients[i][0], tb = bitter + ingredients[i][1];
+			answer = Math.min(answer, Math.abs(ts-tb));
 			back(depth+1, i+1, sour * ingredients[i][0], bitter + ingredients[i][1]);
 		}
 	}
