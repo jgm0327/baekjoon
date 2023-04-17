@@ -3,15 +3,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-	private static int n, answer;
-	private static int[] arr, dp;
+	private static int n;
+	private static int[] arr;
 	
 	public static void main(String[] args) throws IOException{
 		insert();
-		dp = new int[n + 1];
-		answer = arr[1];
-		recur(1, 0, 0);
-		System.out.println(answer);
+		solution();
 	}
 	
 	private static void insert() throws IOException{
@@ -26,20 +23,22 @@ public class Main {
 		br.close();
 	}
 	
-	private static void recur(int start, int total, int num) {
-		if(n == 1) {
-			answer = arr[1];
-			return;
-		}
-		
-		for(int i = start ; i<=n ; i++) {
-			if(arr[i] > num && dp[i] < total + arr[i]) {
-				total += arr[i];
-				dp[i] = total;
-				answer = Math.max(total, answer);
-				recur(i+1, total, arr[i]);
-				total -= arr[i];
+	private static void solution() {
+		int[] dp = new int[n+1];
+		dp[1] = arr[1];
+		for(int i=2 ; i<=n ; i++) {
+			dp[i] = arr[i];
+			for(int j=1 ; j<i ; j++) {
+				if(arr[i] > arr[j]) {
+					dp[i] = Math.max(dp[i], arr[i] + dp[j]);
+				}
 			}
 		}
+		
+		int ret = 0;
+		for(int d : dp) {
+			ret = Math.max(d, ret);
+		}
+		System.out.println(ret);
 	}
 }
