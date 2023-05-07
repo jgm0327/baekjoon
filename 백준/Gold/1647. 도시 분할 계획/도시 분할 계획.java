@@ -1,15 +1,12 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Main {
 	private static int n;
 	private static int[] parents;
-	private static Map<Integer, Boolean> nodes;
 	private static Queue<int[]> pq;
 	
 	public static void main(String[] args) throws IOException{
@@ -28,7 +25,6 @@ public class Main {
 		int m = Integer.parseInt(size[1]);
 		
 		pq = new PriorityQueue<>((o1,o2) -> o1[2] - o2[2]);
-		nodes = new HashMap<>();
 		
 		while(m-- > 0) {
 			String[] str = br.readLine().split(" ");
