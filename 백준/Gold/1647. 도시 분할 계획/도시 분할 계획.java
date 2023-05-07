@@ -6,7 +6,7 @@ import java.util.Queue;
 
 public class Main {
 	private static int n;
-	private static int[] parents;
+	private static int[] parents, rank;
 	private static Queue<int[]> pq;
 	
 	public static void main(String[] args) throws IOException{
@@ -20,7 +20,11 @@ public class Main {
 		n = Integer.parseInt(size[0]);
 		
 		parents = new int[n+1];
-		for(int i=0 ; i<=n ; i++)parents[i] = i;
+		rank = new int[n+1];
+		for(int i=0 ; i<=n ; i++) {
+			parents[i] = i;
+			rank[i] = 0;
+		}
 		
 		int m = Integer.parseInt(size[1]);
 		
@@ -42,7 +46,13 @@ public class Main {
 	private static void union(int x, int y) {
 		int nx = findParent(x), ny = findParent(y);
 		if(nx == ny)return;
+		if(rank[nx] < rank[ny]) {
+			int temp = nx;
+			nx = ny;
+			ny = temp;
+		}
 		parents[ny] = nx;
+		if(rank[ny] == rank[nx])rank[nx]++;
 	}
 	
 	private static void solution() {
