@@ -1,83 +1,58 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-	public class Main {
-		private static class Node implements Comparable<Node>{
-			int sour, des, weight;
-			
-			public Node(int sour, int des, int weight) {
-				this.sour = sour;
-				this.des = des;
-				this.weight = weight;
-			}
+class Main{
+  private static int n, m;
+  private static int[] parents;
+  private static Queue<int[]> pq;
 
-			@Override
-			public int compareTo(Node obj) {
-				return this.weight - obj.weight;
-			}
-		}
-		private static int n, m;
-		private static Queue<Node> que;
-		private static List<Integer> path;
-		private static int[] parents;
-		
-		public static void main(String[] args) throws IOException{
-			init();
-			solution();
-		}
-		
-		private static void init() throws IOException{
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			String[] size = br.readLine().split(" ");
-			n = Integer.parseInt(size[0]);
-			m = Integer.parseInt(size[1]);
-			parents = new int[n+1];
-			
-			for(int i=0 ; i<=n ; i++)parents[i] = i;
-			
-			que = new PriorityQueue<>();
-			path = new ArrayList<>();
-			
-			while(m-- > 0) {
-				String[] values = br.readLine().split(" ");
-				int sour = Integer.parseInt(values[0]);
-				int des = Integer.parseInt(values[1]);
-				int weight = Integer.parseInt(values[2]);
-				que.add(new Node(sour, des, weight));
-			}
-			
-			br.close();
-		}
-		
-		private static int findParents(int x) {
-			if(parents[x] == x)return x;
-			return parents[x] = findParents(parents[x]);
-		}
-		
-		private static void union(int x, int y) {
-			int px = findParents(x), py = findParents(y);
-			if(px == py)return;
-			parents[py] = px;
-		}
-		
-		private static void solution() {
-			while(!que.isEmpty() && path.size() <= n) {
-				Node node = que.poll();
-				int sour = node.sour, des = node.des;
-				if(findParents(sour) == findParents(des))continue;
-				union(sour, des);
-				path.add(node.weight);
-			}
-			
-			int ret = 0;
-			for(int value : path) {
-				ret += value;
-			}
-			System.out.println(ret);
-		}
+  public static void main(String[] args) throws IOException{
+    init();
+    mst();
+  }
+
+  private static void init() throws IOException{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String[] size = br.readLine().split(" ");
+    n = Integer.parseInt(size[0]);
+    m = Integer.parseInt(size[1]);
+    pq = new PriorityQueue<>((o1, o2) -> o1[2] - o2[2]);
+
+    for(int i=0 ; i<m ; i++){
+      String[] values = br.readLine().split(" ");
+      int sour = Integer.parseInt(values[0]), des = Integer.parseInt(values[1]), cost = Integer.parseInt(values[2]);
+      pq.add(new int[]{sour, des, cost});
+    }
+
+    parents = new int[n+1];
+    for(int i=1 ; i<=n ; i++)parents[i] = i;
+    br.close();
+  }
+
+  private static void mst(){
+    int answer = 0;
+    while(!pq.isEmpty()){
+      int[] cur = pq.poll();
+      int sour = cur[0], des = cur[1], cost = cur[2];
+      if(findParents(sour) == findParents(des))continue;
+      union(sour, des);
+      answer += cost;
+    }
+
+    System.out.println(answer);
+  }
+
+  private static int findParents(int x){
+    if(x == parents[x])return x;
+    return parents[x] = findParents(parents[x]);
+  }
+
+  private static void union(int x, int y){
+    int px = findParents(x), py = findParents(y);
+    if(px == py)return;
+    parents[py] = px;
+  }
 }
