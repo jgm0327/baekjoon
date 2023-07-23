@@ -1,18 +1,25 @@
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Scanner;
 
 public class Main {
 	private static int n;
 	private static boolean[] visit;
-	public static void main(String[] args){
+	private static BufferedWriter bw;
+	public static void main(String[] args) throws IOException{
 		Scanner sc  = new Scanner(System.in);
+		bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		n = sc.nextInt();
 		visit = new boolean[n + 1];
 		recur(0, new StringBuilder());
+		bw.flush();
+		bw.close();
 	}
 
-	private static void recur(int depth, StringBuilder path){
+	private static void recur(int depth, StringBuilder path) throws IOException{
 		if(depth == n){
-			System.out.println(path);
+			bw.write(path.toString() + "\n");
 			return;
 		}
 
