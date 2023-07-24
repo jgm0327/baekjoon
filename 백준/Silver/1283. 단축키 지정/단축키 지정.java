@@ -26,11 +26,7 @@ class Main{
         char ch = paragraph.charAt(i);
         if((i == 0 || paragraph.charAt(i - 1) == ' ') && !visit.containsKey(toLower(ch))){
           flag = true;
-          sb.append('[');
-          sb.append(ch);
-          sb.append(']');
-          sb.append(paragraph.substring(i + 1));
-          visit.put(toLower(ch), true);
+          makeShortCut(sb, paragraph.substring(i + 1), ch, visit);
           bw.write(sb.toString());
           break;
         }
@@ -41,16 +37,13 @@ class Main{
         bw.write('\n');
         continue;
       }
+      
       sb = new StringBuilder();
       for(int i=0 ; i<paragraph.length() ; i++){
         char ch = paragraph.charAt(i);
         if(ch != ' ' && !visit.containsKey(toLower(ch))){
           flag = true;
-          sb.append('[');
-          sb.append(ch);
-          sb.append(']');
-          sb.append(paragraph.substring(i + 1));
-          visit.put(toLower(ch), true);
+          makeShortCut(sb, paragraph.substring(i + 1), ch, visit);
           bw.write(sb.toString());
           break;
         }
@@ -67,5 +60,13 @@ class Main{
   
   private static Character toLower(Character ch){
     return 'A' <= ch && ch <= 'Z' ? (char)(ch + 32) : ch;
+  }
+
+  private static void makeShortCut(StringBuilder sb, String remind, char ch,  Map<Character, Boolean> visit){
+    sb.append('[');
+    sb.append(ch);
+    sb.append(']');
+    sb.append(remind);
+    visit.put(toLower(ch), true);
   }
 }
