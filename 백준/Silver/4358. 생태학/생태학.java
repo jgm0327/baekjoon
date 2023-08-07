@@ -16,9 +16,11 @@ class Main{
             size++;
         }
 
+        StringBuilder sb = new StringBuilder();
         for(String key : map.keySet()){
-            System.out.printf("%s %.4f\n", key, ((double)map.get(key) / size) * 100);
+            sb.append(key).append(" ").append(String.format("%.4f", ((double)map.get(key) / size) * 100)).append("\n");
         }
+        System.out.println(sb);
         br.close();
     }
 }
