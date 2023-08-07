@@ -1,44 +1,44 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 
-public class Main {
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		int n = Integer.parseInt(br.readLine());
-		int bits = 0;
-		while(n-- > 0) {
-			String[] input = br.readLine().split(" ");
-			String command = input[0];
-			int num = input.length > 1 ? Integer.parseInt(input[1]) : 0;
-			
-			if(command.equals("add")) {
-				bits = bits | (1 << num);
-			}else if(command.equals("check")) {
-				int bit = (bits & (1 << num)) >> num;
-				bw.write(bit + "\n");
-			}else if(command.equals("remove")) {
-				bits = bits & ~(1 << num);
-			}else if(command.equals("toggle")) {
-				if(((bits & (1 << num)) >> num) == 1) {
-					bits &= ~(1 << num);
-				}else {
-					bits = bits | (1 << num);
-				}
-			}else if(command.equals("empty")){
-				bits = 0;
-			}else if(command.equals("all")) {
-				bits = 0;
-				for(int i=1; i <=20 ; i++) {
-					bits |= (1 << i);
-				}
-			}
-		}
-		bw.flush();
-		bw.close();
-		br.close();
-	}
+class Main{
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
+
+        int set = 0;
+        StringBuilder sb = new StringBuilder();
+        while(T-- > 0){
+            String[] values = br.readLine().split(" ");
+            if(values.length == 1){
+                if(values[0].equals("all")){
+                    set = 0;
+                    for(int i=0 ; i<20 ; i++){
+                        set |= (1 << i);
+                    }
+                }else if(values[0].equals("empty")){
+                    set = 0;
+                }
+            }else{
+                int num = Integer.parseInt(values[1]);
+                if(values[0].equals("add")){
+                    set |= (1 << (num - 1));
+                }else if(values[0].equals("remove")){
+                    set &= ~(1 << (num - 1));
+                }else if(values[0].equals("check")){
+                    sb.append(((1 << (num - 1)) | set) == set ? "1" : "0")
+                     .append("\n");
+                }else if(values[0].equals("toggle")){
+                    if(((1 << (num - 1)) | set) == set){
+                        set &= ~(1 << (num - 1));
+                    }else{
+                        set |= (1 << (num - 1));
+                    }
+                }
+            }
+        }
+        System.out.println(sb);
+        br.close();
+    }
 }
