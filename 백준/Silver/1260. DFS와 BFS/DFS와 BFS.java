@@ -1,72 +1,55 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.StringTokenizer;
 
-public class Main {
-	
-	static int n, m;
-	static boolean[] visit;
-	
-	public static void main(String[] args) {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try {
-			Integer[] arr = (Integer[])Arrays.stream(br.readLine().split(" "))
-					.map(Integer::parseInt)
-					.toArray(Integer[]::new);
-			n = arr[0]; 
-			m = arr[1]; 
-			int s = arr[2];
-			ArrayList<Integer>[] graph = new ArrayList[n+1];
-			for(int i=0 ; i<n+1 ; i++) {
-				graph[i] = new ArrayList<>();
-			}
-			for(int i=0 ; i<m ; i++) {
-				Integer[] input = (Integer[])Arrays.stream(br.readLine().split(" "))
-						.map(Integer::parseInt)
-						.toArray(Integer[]::new);
-				graph[input[0]].add(input[1]);
-				graph[input[1]].add(input[0]);
-			}
-			visit = new boolean[n+1];
-			dfs(s, graph);
-			System.out.println();
-			visit = new boolean[n+1];
-			bfs(s, graph);
-		}catch(IOException e) {
-			
-		}
-	}
-	
-	public static void bfs(int s, ArrayList<Integer>[] graph) {
-		Queue<Integer> que = new LinkedList<>();
-		que.add(s);
-		visit[s] = true;
-		while(!que.isEmpty()) {
-			int sour = que.poll();
-			System.out.print(sour + " ");
-			Collections.sort(graph[sour]);
-			graph[sour].stream()
-			.filter(des -> !visit[des])
-			.forEach(des ->{
-				que.add(des);
-				visit[des] = true;
-			});
-		}
-	}
-	
-	public static void dfs(int sour, ArrayList<Integer>[] graph) {
-		if(visit[sour])return;
-		visit[sour] = true;
-		System.out.print(sour + " ");
-		Collections.sort(graph[sour]);
-		for(Integer des : graph[sour]) {
-			if(!visit[des])dfs(des, graph);
-		}
-	}
+class Main{
+    private static int n, m, v;
+    private static int[][] graph;
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stk = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(stk.nextToken());
+        m = Integer.parseInt(stk.nextToken());
+        v = Integer.parseInt(stk.nextToken());
 
+        graph = new int[n+1][n+1];
+        for(int i=0 ; i<m ; i++){
+            stk = new StringTokenizer(br.readLine());
+            int sour = Integer.parseInt(stk.nextToken()), des = Integer.parseInt(stk.nextToken());
+            graph[sour][des] = graph[des][sour] = 1;
+        }
+        dfs(v, new boolean[n + 1]);
+        System.out.println();
+        bfs();
+        br.close();
+    }
+
+    private static void dfs(int sour, boolean[] visit){
+        System.out.print(sour+ " ");
+        visit[sour] = true;
+        for(int i=1; i<=n ; i++){
+            if(graph[sour][i] == 0 || visit[i])continue;
+            dfs(i, visit);
+        }
+    }
+
+    private static void bfs(){
+        Queue<Integer> que = new LinkedList<>();
+        que.add(v);
+        boolean[] visit = new boolean[n + 1];
+        visit[v] = true;
+
+        while(!que.isEmpty()){
+            int sour = que.poll();
+            System.out.print(sour + " ");
+            for(int i=1 ; i<=n ; i++){
+                if(graph[sour][i] == 0 || visit[i])continue;
+                que.add(i);
+                visit[i] = true;
+            }
+        }
+    }
 }
