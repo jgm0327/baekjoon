@@ -2,7 +2,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -42,10 +44,17 @@ public class Main {
 	}
 
 	private static void dfs(int sour){
+		Queue<Integer> que = new LinkedList<>();
+		que.add(sour);
 		visit[sour] = true;
-		for(int des : graph[sour]){
-			if(visit[des])continue;
-			dfs(des);
+
+		while(!que.isEmpty()){
+			int s = que.poll();
+			for(int des : graph[s]){
+				if(visit[des])continue;
+				que.add(des);
+				visit[des] = true;
+			}
 		}
 	}
 }
