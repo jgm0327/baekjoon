@@ -8,8 +8,9 @@ class Main{
         long target = Long.parseLong(br.readLine());
         long sum = 0, num = 0;
         while(sum < target){
+            sum += num;
+            if(sum >= target)break;
             num++;
-            sum = (num * (num + 1)) / 2;
         }
         System.out.println(sum > target ? num - 1 : num);
         br.close();
