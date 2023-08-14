@@ -2,20 +2,26 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] numbers) {
-        int[] answer = new int[numbers.length];
-        ArrayDeque<int[]> stk = new ArrayDeque<>();
+        int n = numbers.length;
+        int[] answer = new int[n];
+        ArrayDeque<Integer> stk = new ArrayDeque<>();
         
-        for(int i=0 ; i<numbers.length ; i++){
-            while(!stk.isEmpty() && stk.peekLast()[0] < numbers[i]){
-                int[] peek = stk.pollLast();
-                answer[peek[1]] = numbers[i];
+        for(int i = n - 1 ; i >= 0 ; i--){
+            int number = numbers[i];
+            if(!stk.isEmpty() && stk.peekLast() > number){
+                answer[i] = stk.peekLast();
+                stk.add(number);
+                continue;
             }
-            if(stk.isEmpty() || stk.peekLast()[0] >= numbers[i])stk.addLast(new int[]{numbers[i], i});
-        }
-        
-        while(!stk.isEmpty()){
-            int[] peek = stk.pollLast();
-            answer[peek[1]] = -1;
+            while(!stk.isEmpty() && stk.peekLast() <= number){
+                stk.pollLast();
+            }
+            if(stk.isEmpty()){
+                answer[i] = -1;
+            }else{
+                answer[i] = stk.peekLast();
+            }
+            stk.add(number);
         }
         return answer;
     }
