@@ -1,49 +1,54 @@
 import java.util.*;
 
 class Solution {
-    Map<String, Integer> map;
+    final int oneYear = 28*12;
     
     class CustomDate{
         int year, month, day;
+        
         public CustomDate(String date){
             String[] str = date.split("\\.");
-            year = Integer.parseInt(str[0]);
-            month = Integer.parseInt(str[1]);
-            day = Integer.parseInt(str[2]);
+            this.year = Integer.parseInt(str[0]);
+            this.month = Integer.parseInt(str[1]);
+            this.day = Integer.parseInt(str[2]);
         }
     }
     
     public int[] solution(String today, String[] terms, String[] privacies) {
-        List<Integer> answer = new ArrayList<>();
-        List<CustomDate> dates = new ArrayList<>();
-        map = new HashMap<>();
+        int[] answer = new int[privacies.length];
+        int idx = 0;
+        Map<String, Integer> map = new HashMap<>();
+        CustomDate present = new CustomDate(today);
         
-        //약관 종류와 유효기간 분리
         for(String term : terms){
-            String[] data = term.split(" ");
-            map.put(data[0], Integer.parseInt(data[1]));
+            String[] split = term.split(" ");
+            map.put(split[0], Integer.parseInt(split[1]) * 28);
         }
         
-        for(String privacy : privacies){
-            String[] str = privacy.split(" ");
-            CustomDate cur = new CustomDate(str[0]);
-            cur.month += map.get(str[1]);
-            if(cur.month > 12){
-                cur.year += (cur.month / 12);
-                cur.month -= (cur.month / 12) * 12;
+        for(int i=0 ; i<privacies.length; i++){
+            String[] split = privacies[i].split(" ");
+            CustomDate date = new CustomDate(split[0]);
+            if(diffDate(present, date) >= map.get(split[1])){
+                answer[idx] = i + 1;
+                idx++;
             }
-            dates.add(cur);
         }
-        
-        CustomDate today2 = new CustomDate(today);
-        Date present = new Date(today2.year, today2.month, today2.day);
-        
-        for(int i=0 ; i<dates.size() ; i++){
-            CustomDate cur = dates.get(i);
-            Date compare = new Date(cur.year, cur.month, cur.day);
-            if(compare.compareTo(present) <= 0)answer.add(i + 1);
+        return Arrays.copyOfRange(answer, 0, idx);
+    }
+    
+    private int diffDate(CustomDate today, CustomDate date){
+        int ret = 0, minusMonth = 0, minusYear = 0, plusDay=0, plusMonth=0;
+        if(today.day < date.day){
+            minusMonth = -1;
+            plusDay = 28;
         }
-        
-        return answer.stream().mapToInt(v->v).toArray();
+        ret += (today.day + plusDay - date.day);
+        if(today.month + minusMonth < date.month){
+            minusYear = -1;
+            plusMonth = 12;
+        }
+        ret += (today.month + plusMonth + minusMonth - date.month) * 28;
+        ret += (today.year + minusYear - date.year) * oneYear;
+        return ret;
     }
 }
