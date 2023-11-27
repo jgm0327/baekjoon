@@ -1,15 +1,19 @@
-from sys import stdin
-import heapq
+n = int(input())
 
-n = int(stdin.readline())
-graph = [stdin.readline().rstrip().split() for _ in range(n)]
+board = [list(input().split()) for _ in range(n)]
 
-for i in range(2):
-    for sour in range(n):
-        for mid in range(n):
-            for des in range(n):
-                if graph[sour][mid] == '1' and graph[mid][des] == '1':
-                    graph[sour][des] = '1'
-    
-for g in graph:
-    print(' '.join(g))
+max_value = int(1e4)
+
+path = [[1 if board[i][j] == '1' else max_value for j in range(n)] for i in range(n)]
+
+
+for k in range(n):
+    for i in range(n):
+        for j in range(n):
+            path[i][j] = min(path[i][j], (path[i][k] + path[k][j]))
+
+for i in range(n):
+    for j in range(n):
+        print(1 if path[i][j] != max_value else 0, end=' ')
+    print()
+
