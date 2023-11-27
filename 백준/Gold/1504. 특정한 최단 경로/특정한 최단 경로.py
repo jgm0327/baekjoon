@@ -1,55 +1,65 @@
+from sys import stdin
 import heapq
-import sys
 
-n = 0
-INF = 2020202020
+input = stdin.readline
+
+n, m = map(int, input().split())
+
+graph = [[] for _ in range(n + 1)]
+
+for _ in range(m):
+    u, v, cost = map(int, input().split())
+    
+    graph[u].append((v, cost))
+    graph[v].append((u, cost))
+
+v1, v2 = map(int, input().split())
 
 
-def dijkstra(graph, start, end):
-    global n, INF
+def dijkstra(_graph, start, end):
     heap = []
-    heapq.heappush(heap, [0, start])
-    cost = [INF] * (n + 1)
-    cost[start] = 0
+
+    INF = int(1e9)
+    costs = [INF] * (len(_graph))
+    costs[start] = 0
+
+    heapq.heappush(heap, (costs[start], start))
 
     while heap:
-        cur = heapq.heappop(heap)
+        cur_cost, sour = heapq.heappop(heap)
 
-        if cost[cur[1]] < cur[0]:
+        if costs[sour] < cur_cost:
             continue
-        for data in graph[cur[1]]:
-            des, weight = data[1], data[0]
-            if cost[des] > cost[cur[1]] + weight:
-                cost[des] = cost[cur[1]] + weight
-                heapq.heappush(heap, [weight+cost[cur[1]], des])
-    return cost[end]
+
+        for des, cost in _graph[sour]:
+            next_cost = cur_cost + cost
+            
+            if next_cost >= costs[des]:
+                continue
+            
+            costs[des] = next_cost
+            
+            if des == end:
+                continue
+            
+            heapq.heappush(heap, (next_cost, des))
+            
+    return costs[end]
 
 
-def solution():
-    global n
+total1 = 0
 
-    n, m = map(int, sys.stdin.readline().split())
-    graph = [[] for i in range(n + 1)]
-    cost = [0] * 2
-    for _ in range(m):
-        sour, des, weight = map(int, sys.stdin.readline().split())
-        graph[sour].append([weight, des])
-        graph[des].append([weight, sour])
-    v1, v2 = map(int, sys.stdin.readline().split())
+total1 += dijkstra(graph, 1, v1)
+total1 += dijkstra(graph, v1, v2)
+total1 += dijkstra(graph, v2, n)
 
-    cost[0] += dijkstra(graph, 1, v1)
-    cost[0] += dijkstra(graph, v1, v2)
-    cost[0] += dijkstra(graph, v2, n)
+total2 = 0
 
-    cost[1] += dijkstra(graph, 1, v2)
-    cost[1] += dijkstra(graph, v2, v1)
-    cost[1] += dijkstra(graph, v1, n)
+total2 += dijkstra(graph, 1, v2)
+total2 += dijkstra(graph, v2, v1)
+total2 += dijkstra(graph, v1, n) 
 
-    Min = min(cost)
-    if Min >= INF:
-        print(-1)
-    else:
-        print(Min)
+answer = min(total1, total2)
+print(answer if answer < int(1e9) else -1)
 
-
-solution()
+    
