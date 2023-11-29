@@ -1,67 +1,82 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
-	
-	static int n, m;
-	static List<Integer[]> graph[];
-	static int[] costs;
-	
-	public static void main(String[] args) {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		try {
-			Integer[] arr = Arrays.stream(br.readLine().split(" ")).map(Integer::parseInt).toArray(Integer[]::new);
-			n = arr[0]; m = arr[1];
-			graph = new ArrayList[n+1];
-			for(int i=1 ; i<=n ; i++)graph[i] = new ArrayList<>();
-			int start = Integer.parseInt(br.readLine()), INF = 1000000000;
-			
-			for(int i=0 ; i<m ; i++) {
-				Integer[] input = Arrays.stream(br.readLine().split(" ")).map(Integer::parseInt).toArray(Integer[]::new);
-				int sour = input[0], des = input[1], weight = input[2];
-				graph[sour].add(new Integer[] {des, weight});
-			}
-			
-			costs = new int[n + 1];
-			Arrays.fill(costs, INF);
-			dijkstra(start);
-			StringBuilder str = new StringBuilder();
-			for(int i=1 ; i<=n ; i++) {
-				str.append(costs[i] != INF ? costs[i] + "\n" : "INF\n");
-			}
-			bw.write(str.toString());
-			br.close();
-			bw.close();
-		}catch(IOException e) {
-			
-		}
-	}
-	
-	private static void dijkstra(int start) {
-		Queue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
-		pq.add(new int[] {0, start});
-		costs[start] = 0;
-		
-		while(!pq.isEmpty()) {
-			int[] cur = pq.poll();
-			int cost = cur[0], sour = cur[1];
-			if(costs[sour] < cost)continue;
-			for(Integer[] data : graph[sour]) {
-				int des = data[0], next_cost = cost + data[1];
-				if(next_cost < costs[des]) {
-					costs[des] = next_cost;
-					pq.add(new int[] {costs[des], des});
-				}
-			}
-		}
-	}
+    private static int n;
+    private static Map<Integer, Integer>[] graph;
+    
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stk = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(stk.nextToken());
+        int m = Integer.parseInt(stk.nextToken());
+
+        graph = new HashMap[n + 1];
+        for(int i=0 ; i<=n ; i++){
+            graph[i] = new HashMap<>();
+        }
+
+        int start = Integer.parseInt(br.readLine());
+
+        for(int i=0 ;i<m ; i++){
+            stk = new StringTokenizer(br.readLine());
+
+            int sour = Integer.parseInt(stk.nextToken()),
+            des = Integer.parseInt(stk.nextToken()),
+            cost = Integer.parseInt(stk.nextToken());
+
+            if(graph[sour].containsKey(des) && graph[sour].get(des) <= cost){
+                continue;
+            }
+
+            graph[sour].put(des, cost);
+        }
+
+        dijkstra(start);
+        
+    }
+
+    private static void dijkstra(int start){
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]);
+
+        int[] costs = new int[n + 1];
+        Arrays.fill(costs, Integer.MAX_VALUE);
+
+        costs[start] = 0;
+        pq.add(new int[]{start, 0});
+
+        while(!pq.isEmpty()){
+            int[] cur = pq.poll();
+            int sour = cur[0], cost = cur[1];
+
+            if(costs[sour] < cost)continue;
+
+            for(int des : graph[sour].keySet()){
+                int nextCost = graph[sour].get(des) + cost;
+
+                if(nextCost >= costs[des])continue;
+
+                costs[des] = nextCost;
+                pq.add(new int[]{des, nextCost});
+            }
+        }
+
+        printValue(costs);
+    }
+
+    private static void printValue(final int[] costs){
+        StringBuilder answer = new StringBuilder();
+        for(int i=1 ; i<=n ; i++){
+            answer.append(costs[i] != Integer.MAX_VALUE ? costs[i] : "INF").append("\n");
+        }
+        System.out.println(answer);
+    }
+
 }
