@@ -1,18 +1,26 @@
 from sys import stdin
 
-n, m = map(int, stdin.readline().split())
-enterances = sorted(list(int(stdin.readline()) for _ in range(n)))
+input = stdin.readline
 
-start, end = 0, enterances[0] * m
-while start <= end:
-    mid = (start + end) // 2
+n, m = map(int, input().split())
+
+enterances = [int(input()) for _ in range(n)]
+
+INF = int(1e18)
+left, right = 0, INF
+answer = INF
+
+while left <= right:
+    mid = (left + right) // 2 # 걸리는 시간
+
     total = 0
     for enterance in enterances:
-        total += mid // enterance
-    if m > total:
-        start = mid + 1
-    else:
-        answer = mid
-        end = mid - 1
-print(answer)
+        total += (mid // enterance)
 
+    if total >= m:
+        right = mid - 1
+        answer = min(answer, mid)
+    else:
+        left = mid + 1
+
+print(answer)
