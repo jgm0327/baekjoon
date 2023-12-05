@@ -5,10 +5,11 @@ input = stdin.readline
 
 n, m, k = map(int, input().split())
 
-cables = [{} for _ in range(n + 1)]
+cables = [[] for _ in range(n + 1)]
 
 for sour, des, cost in [list(map(int, input().split())) for _ in range(m)]:
-    cables[sour][des] = cables[des][sour] = cost
+    cables[sour].append((des, cost))
+    cables[des].append((sour, cost))
 
 
 def dijkstra(target_cost):
@@ -22,13 +23,13 @@ def dijkstra(target_cost):
     costs[1] = 0
 
     while heap:
-        cost, sour = heappop(heap)
+        cur_cost, sour = heappop(heap)
 
-        if cost > costs[sour]:
+        if cur_cost > costs[sour]:
             continue
 
-        for des in cables[sour].keys():
-            next_cost = cost + (cables[sour][des] > target_cost)
+        for des, cost in cables[sour]:
+            next_cost = cur_cost + (1 if cost > target_cost else 0)
 
             if next_cost >= costs[des]:
                 continue
