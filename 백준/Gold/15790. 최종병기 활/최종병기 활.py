@@ -5,9 +5,8 @@ slots = [int(input()) for _  in range(m)]
 left, right = 1, n
 answer = -1
 
-while left <= right:
-    mid = (left + right) // 2 # 활의 최소 길이
 
+def count(min_value):
     for i in range(m):
         # 시작점 저
         prev = slots[i]
@@ -21,19 +20,21 @@ while left <= right:
             if length <= 0:
                 length += n
 
-            # 최소 길이인 mid 보다 크다면 continue
-            if length < mid:
-                continue
-
-            # 구간 나누기
-            total += 1
-            # 시작점 변
-            prev = slots[j % m]
+            if length >= mid:
+                # 구간 나누기
+                total += 1
+                # 시작점 변
+                prev = slots[j % m]
             
         if total >= k:
-            break
+            return True
+    return False
 
-    if total >= k:
+
+while left <= right:
+    mid = (left + right) // 2 # 활의 최소 길이
+
+    if count(mid):
         left = mid + 1
         answer = mid
     else:
