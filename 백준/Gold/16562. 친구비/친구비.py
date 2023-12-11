@@ -1,40 +1,43 @@
-from sys import stdin, setrecursionlimit
+from sys import stdin
 
-n, m, budget = map(int, stdin.readline().split())
-money = [0] + list(map(int, stdin.readline().split()))
-parent = {}
-INF = int(1e8)
-for i in range(1, n+1):
-    parent[i] = i
+input = stdin.readline
 
-setrecursionlimit(int(1e8))
+n, m, k = map(int, input().split())
 
-def find_parent(x: int) -> int:
-    global parent
-    if x == parent[x]:
+money = [0] + list(map(int, input().split()))
+
+parents = [i for i in range(n + 1)]
+
+
+def find_parent(x):
+    global parents
+
+    if parents[x] == x:
         return x
-    parent[x] = find_parent(parent[x])
-    return parent[x]
+
+    parents[x] = find_parent(parents[x])
+    return parents[x]
 
 
-def union(x: int, y: int) -> None:
-    global parent, money
-    xp = find_parent(x)
-    yp = find_parent(y)
-    if xp == yp:
+def union(x, y):
+    global money, parents
+    
+    px, py = find_parent(x), find_parent(y)
+
+    if py == px:
         return
-    if xp != yp:
-        if money[xp] > money[yp]:
-            xp, yp = yp, xp
-        parent[yp] = xp
 
+    if money[py] < money[px]:
+        py, px = px, py
 
-for f1, f2 in [list(map(int, stdin.readline().split())) for _ in range(m)]:
-    union(f1, f2)
+    parents[py] = px
+
+for a, b in [list(map(int, input().split())) for _ in range(m)]:
+    union(a, b)
 
 answer = 0
 for i in range(1, n + 1):
-    p = find_parent(i)
-    answer += money[p]
-    money[p] = 0
-print(answer if answer <= budget else 'Oh no')
+    if parents[i] == i:
+        answer += money[i]
+
+print('Oh no' if answer > k else answer)
