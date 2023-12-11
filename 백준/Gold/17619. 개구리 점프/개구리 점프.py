@@ -39,8 +39,9 @@ while logs:
     if (prev_x1 <= next_x1 <= prev_x2) or (prev_x1 <= next_x2 <= prev_x2)\
     or (next_x1 <= prev_x2 <= next_x2):
         union(prev_idx, next_idx)
-        
-    prev_x1, prev_x2, prev_y, prev_idx = next_x1, next_x2, next_y, next_idx
+        prev_x2 = max(prev_x2, next_x2)
+    else:
+        prev_x1, prev_x2, prev_y, prev_idx = next_x1, next_x2, next_y, next_idx
 
 answer = []
 for sour, des in [list(map(int, input().split())) for _ in range(Q)]:
@@ -51,4 +52,3 @@ for sour, des in [list(map(int, input().split())) for _ in range(Q)]:
         answer.append('0')
 
 print('\n'.join(answer))
-    
