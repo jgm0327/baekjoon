@@ -32,18 +32,6 @@ def union(px, py):
     parents[py] = px
 
 
-def dfs(sour):
-    global visit, count, path
-
-    visit[sour] = True
-    count += 1
-    
-    for des in path[sour]:
-        if visit[des]:
-            continue
-        dfs(des)
-
-
 answer = 0
 while graph:
     cost, sour, des = heappop(graph)
@@ -61,8 +49,11 @@ while graph:
     answer += cost
     union(sour_parent, des_parent)
 
+parent = find_parent(1)
+flag = True
+for i in range(2, n + 1):
+    if parent != find_parent(i):
+        flag = False
+        break
 
-count = 0
-visit = [False] * (n + 1)
-dfs(1)
-print(answer if count == n else -1)
+print(answer if flag else -1)
