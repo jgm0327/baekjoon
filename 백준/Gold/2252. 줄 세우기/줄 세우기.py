@@ -18,25 +18,25 @@ def topology_sort():
     global n, students, preceding_count
     
     que = deque()
-    finished = [False] * (n + 1)
-
+    answer = []
+    
     for sour in range(1, n + 1):
         if preceding_count[sour] == 0:
-            finished[sour] = True
             que.append(sour)
 
     while que:
         sour = que.popleft()
-        print(sour, end=' ')
+        answer.append(str(sour))
         
         for des in students[sour]:
-            if finished[des]:
-                continue
             
             preceding_count[des] -= 1
 
             if preceding_count[des] == 0:
                 que.append(des)
-                finished[des] = True
+
+    print(' '.join(answer))
 
 topology_sort()
+
+            
