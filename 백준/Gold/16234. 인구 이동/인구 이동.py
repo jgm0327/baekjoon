@@ -1,52 +1,87 @@
-import sys; input = sys.stdin.readline
 from collections import deque
 
-def bfs(x, y):
-    q = deque()
-    q.append((x, y))
-    union_contry = []
-    union_contry.append((x, y))
-    while q:
-        x, y = q.popleft()
-        for dx, dy in d:
-            nx = x + dx
-            ny = y + dy
-            if 0 <= nx < N and 0 <= ny < N and not visited[nx][ny]:
-                if L <= abs(graph[x][y] - graph[nx][ny]) <= R:
-                    visited[nx][ny] = True
-                    q.append((nx, ny))
-                    union_contry.append((nx, ny))
-    return union_contry
+n, l, r = map(int, input().split())
 
-if __name__ == '__main__':
-    N, L, R = map(int, input().split())
-    d = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-    graph = [[0]*N for _ in range(N)]
+population = [list(map(int, input().split())) for _ in range(n)]
 
-    for i in range(N):
-        data = list(map(int, input().split()))
-        for j in range(N):
-            graph[i][j] = data[j]
 
-    answer = 0
-    while True:
-        visited = [[False]*N for _ in range(N)]
-        move = False
-        for i in range(N):
-            for j in range(N):
-                if not visited[i][j]:
-                    visited[i][j] = True
-                    union_contry = bfs(i, j)
-                    if 1 < len(union_contry):
-                        move = True
-                        population = sum([graph[x][y] for x, y in union_contry]) // len(union_contry)
-                        for x, y in union_contry:
-                            graph[x][y] = population
+def change_population(loc):
+    global population
 
-        # 모든 나라를 탐색했지만 인구 이동이 일어나지 않은 경우 무한 루프 탈출
-        if not move:
-            break
-        # 인구 이동이 일어났기 때문에 1일 추가
-        else:
-            answer += 1
-    print(answer)
+    change_value = loc[0]
+    ret = 0
+    
+    for y, x in loc[1:]:
+        if population[y][x] == change_value:
+            continue
+        population[y][x] = change_value
+        ret = 1
+
+    return ret
+
+    
+def bfs(y, x, _visit, num):
+    global population, visit, n, flag, location
+
+    que = deque()
+    que.append((y, x))
+    _visit[y][x] = True
+
+    dy, dx = (0,0,1,-1), (1,-1,0,0)
+
+    total = 0
+    ret = []
+
+    while que:
+        cur_y, cur_x = que.popleft()
+        ret.append((cur_y, cur_x))
+        total += population[cur_y][cur_x]
+        
+        for i in range(4):
+            next_y, next_x = cur_y + dy[i], cur_x + dx[i]
+
+            if 0 > next_y or next_y >= n or 0 > next_x or next_x >= n:
+                continue
+
+            if _visit[next_y][next_x] or\
+               not (l <= abs(population[next_y][next_x] - population[cur_y][cur_x])<= r):
+                continue
+
+            que.append((next_y, next_x))
+            _visit[next_y][next_x] = True
+            
+    if len(ret) == 1:
+        return
+    
+    location[num] = [total // len(ret)] + ret
+
+    
+def solution():
+    global population, flag
+    
+    visit = [[False] * n for _ in range(n)]
+    number = 1
+    for i in range(n):
+        for j in range(n):
+            if not visit[i][j]:             
+                bfs(i, j, visit, number)
+                number += 1
+                
+    
+count = 0
+while True:
+    location = {}
+    
+    solution()
+
+    change_count = 0
+
+    for key in location.keys():
+        change_count += change_population(location[key])
+        
+    if change_count == 0:
+        break
+    
+    count += 1
+        
+print(count)
