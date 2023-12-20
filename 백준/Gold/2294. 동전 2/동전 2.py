@@ -1,12 +1,12 @@
-n, k = map(int, input().split())
+n, m = map(int, input().split())
 
-coins = sorted([int(input()) for _ in range(n)])
+coins = [int(input()) for _ in range(n)]
 
-dp = [100001] * (k + 1)
+dp = [10001] * (m + 1)
 dp[0] = 0
 
 for coin in coins:
-    for i in range(coin, k + 1):
-        dp[i] = min(dp[i], dp[i - coin] + 1)
+    for c in range(coin, m + 1):
+        dp[c] = min(dp[c], dp[c - coin] + 1)
 
-print(dp[k] if dp[k] != 100001 else '-1')
+print(dp[m] if dp[m] != 10001 else '-1')
