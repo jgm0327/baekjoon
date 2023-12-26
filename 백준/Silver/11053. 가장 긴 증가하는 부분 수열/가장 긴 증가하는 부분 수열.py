@@ -1,9 +1,17 @@
-n = int(input())
-num_list = list(map(int, input().split()))
-dp = [1] * n
-for i in range(n):
-    for j in range(i + 1, n):
-        if num_list[i] < num_list[j]:
-            dp[j] = max(dp[j], dp[i] + 1)
+from bisect import bisect_left
 
-print(max(dp))
+n = int(input())
+
+numbers = list(map(int, input().split()))
+    
+dp = [numbers[0]]
+
+for number in numbers[1:]:
+    if dp[-1] < number:
+        dp.append(number)
+        continue
+    
+    idx = bisect_left(dp, number)
+    dp[idx] = number
+    
+print(len(dp))
