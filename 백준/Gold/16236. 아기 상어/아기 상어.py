@@ -1,70 +1,94 @@
-import sys
 from collections import deque
-import heapq
 
-n = int(sys.stdin.readline())
-ocean = []
-baby_shark = []
+n = int(input())
+
+ocean = [list(map(int, input().split())) for _ in range(n)]
+
+baby_shark = ()
+count = 0
 
 for i in range(n):
-    fishes = list(map(int, sys.stdin.readline().split()))
-    if 9 in fishes:
-        baby_shark = [i, fishes.index(9)]
-    ocean.append(fishes)
+    for j in range(n):
+        if ocean[i][j] == 9:
+            baby_shark = (i, j, 0)
+            continue
 
-size = 2
-eaten = 0
-
-
-def is_in(y: int, x: int) -> bool:
-    global n
-    return 0 <= y < n and 0 <= x < n
+        if ocean[i][j]:
+            count += 1
 
 
-def bfs(visit_: list) -> list:
-    global ocean, baby_shark, size
-    que = deque()
-    que.append([baby_shark[0], baby_shark[1], 0])
-    distances = []
-    dy, dx = [-1, 0, 0, 1], [0, -1, 1, 0]
+def bfs(y, x, size):
+    global ocean, count, n
 
-    visit_[baby_shark[0]][baby_shark[1]] = True
+    dy, dx = (0,0,1,-1), (1,-1,0,0)
+
+    visit = [[False] * n for _ in range(n)]
+
+    que = deque([(y, x, 0)])
+    visit[y][x] = True
+
+    pos = ()
+    dist = n * n
+
     while que:
-        y, x, dis = que.popleft()
+        cur_y, cur_x, cnt = que.popleft()
 
         for i in range(4):
-            next_y, next_x, next_dis = y + dy[i], x + dx[i], dis + 1
-            if is_in(next_y, next_x) and not visit_[next_y][next_x]:
-                if 0 <= ocean[next_y][next_x] <= size:
-                    visit_[next_y][next_x] = True
-                    que.append([next_y, next_x, next_dis])
-                if 0 < ocean[next_y][next_x] < size:
-                    heapq.heappush(distances, [next_dis, next_y, next_x])
-    if distances:
-        return distances[0]
-    return []
+            ny, nx = cur_y + dy[i], cur_x + dx[i]
+
+            if not (0 <= ny < n and 0 <= nx < n) or ocean[ny][nx] > size or visit[ny][nx]:
+                continue
+
+            visit[ny][nx] = True
+            
+            if ocean[ny][nx] == size or ocean[ny][nx] == 0:
+                que.append((ny, nx, cnt + 1))
+                continue
+
+            if cnt + 1 > dist:
+                continue
+
+            if not pos or dist > cnt + 1:
+                dist = cnt + 1
+                pos = (ny, nx, cnt + 1)
+                continue
+
+            if pos[0] < ny:
+                continue
+        
+            if pos[0] == ny and pos[1] <= nx:
+                continue
+
+            pos = (ny, nx, cnt + 1)
+
+    return pos
 
 
 def solution():
-    global ocean, baby_shark, eaten, size
+    global baby_shark, count
+    
+    answer = 0
+    size = 2
+    eaten_count = 0
+    
+    while count:
+        y, x, cnt = baby_shark
+        ocean[y][x] = 0
+        
+        baby_shark = bfs(y, x, size)
 
-    result = 0
-
-    while True:
-        visit = [[False] * n for _ in range(n)]
-        temp = bfs(visit)
-        if not temp:
+        if not baby_shark:
             break
-        result += temp[0]
-        eaten += 1
-        if eaten == size:
-            eaten = 0
-            size += 1
-        ocean[temp[1]][temp[2]] = 9
-        ocean[baby_shark[0]][baby_shark[1]] = 0
-        baby_shark = [temp[1], temp[2]]
 
-    print(result)
+        eaten_count += 1
+        count -= 1
+        answer += baby_shark[2]
+
+        if eaten_count == size:
+            size += 1
+            eaten_count = 0
+        
+    print(answer)   
 
 
 solution()
