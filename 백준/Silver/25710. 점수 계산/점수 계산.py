@@ -1,24 +1,16 @@
-from sys import stdin
-
-input = stdin.readline
-
 n = int(input())
+energy = list(map(int, input().split()))
 
-numbers = list(map(int, input().split()))
+numbers = {}.fromkeys([i for i in range(1, 1000)], 0)
 
-number_map = {}
-
-for number in numbers:
-    if number_map.get(number) is None:
-        number_map[number] = 1
-        continue
-    number_map[number] += 1
+for e in energy:
+    numbers[e] += 1
 
 
-def sum_digit_number(number):
+def sum_digit(number):
     total = 0
-
-    while number > 0:
+    
+    while number:
         total += number % 10
         number //= 10
 
@@ -26,14 +18,15 @@ def sum_digit_number(number):
 
 
 answer = 0
+
 for i in range(1, 1000):
-    if number_map.get(i) is None:
+    if numbers[i] == 0:
         continue
     
     for j in range(1, 1000):
-        if number_map.get(j) is None or (i == j and number_map[i] < 2):
+        if (i == j and numbers[j] <= 1) or numbers[j] == 0:
             continue
         
-        answer = max(answer, sum_digit_number(i * j))
-        
+        answer = max(answer, sum_digit(i * j))
+
 print(answer)
