@@ -1,31 +1,28 @@
-from sys import stdin
+import sys
 from heapq import heappush, heappop
 
-input = stdin.readline
+input = sys.stdin.readline
 
 n, m = map(int, input().split())
 
 graph = [[] for _ in range(n + 1)]
 
-for _ in range(m):
-    u, v, cost = map(int, input().split())
-    graph[u].append((v, cost))
-    graph[v].append((u, cost))
+for sour, des, cost in [list(map(int, input().split())) for _ in range(m)]:
+    graph[sour].append((des, cost))
+    graph[des].append((sour, cost))
 
 s, t = map(int, input().split())
 
 
-def dijkstra(_s, _t):
-    global graph, n
+def dijkstra():
+    global graph, s, t, n 
+
+    INF = int(1e9)
+    costs = [INF] * (n + 1)
 
     heap = []
-    
-    INF = int(1e9)
-    
-    costs = [INF] * (n + 1)
-    costs[_s] = 0
 
-    heappush(heap, (0, _s))
+    heappush(heap, (0, s))
 
     while heap:
         cur_cost, sour = heappop(heap)
@@ -34,18 +31,15 @@ def dijkstra(_s, _t):
             continue
 
         for des, cost in graph[sour]:
-            next_cost = cur_cost + cost
+            next_cost = cost + cur_cost
 
             if next_cost >= costs[des]:
                 continue
 
             costs[des] = next_cost
-            
-            if _t == des:
-                continue
-            
             heappush(heap, (next_cost, des))
 
-    return costs[_t]
+    return costs[t]
 
-print(dijkstra(s, t))
+
+print(dijkstra())
