@@ -35,6 +35,5 @@ for _ in range(int(input())):
 
     answer = 0
     for target in a:
-        temp = binary_search(target, b)
         answer += binary_search(target, b)
     print(answer)
