@@ -18,14 +18,17 @@ def binary_search(target, b):
         elif b[mid] < target:
             left = mid + 1
 
-    left = left if left < len(b) else left - 1
-    right = right if right >= 0 else right + 1
-
-    if abs(b[left] - target) == abs(b[right] - target):
-        return b[left] if left < right else b[right]
-
-    return b[left] if abs(b[left] - target) <= abs(b[right] - target) else b[right]
-
+    if left >= len(b):
+        left -= 1
+        
+    if right < 0:
+        right += 1
+        
+    if left > right:
+        left, right = right, left
+    
+    return b[left] if abs(target - b[right]) >= abs(target - b[left]) else b[right]
+    
 
 for _ in range(int(input())):
     n, m = map(int, input().split())
