@@ -18,7 +18,7 @@
 
 <p>동헌이는 모형 비행기 조종 대회에 참가하였다. 이 대회에서는 격자 모양의 공간에서 모형 비행기를 조종하여 얻는 <strong>비행 점수</strong>로 순위를 매긴다. 격자의 각 칸에는 점수가 부여되어 있고, 비행 점수는 "<strong>상승 비행</strong>을 할 때 지나간 칸에 부여된 점수의 총합"과 "<strong>하강 비행</strong>을 할 때 지나간 칸에 부여된 점수의 총합"을 더한 값이다. 출발한 칸과 도착한 칸도 지나간 칸으로 간주한다.</p>
 
-<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/6babc434-88bc-4083-b78d-6b99dff6b9ca/-/crop/1639x573/156,401/-/preview/" style="height: 227px; width: 650px;"></p>
+<p style="text-align: center;"><img alt="" src="" style="height: 227px; width: 650px;"></p>
 
 <p style="text-align: center;"><그림 1> 시작과 끝 칸 및 가능한 이동 방향</p>
 
@@ -26,17 +26,17 @@
 
 <p>모형 비행기는 상승 비행 중에는 앞 또는 위로만 이동할 수 있고, 하강 비행 중에는 앞 또는 아래로만 이동할 수 있다.</p>
 
-<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/17063436-6675-4c21-9044-018a8476c5ae/-/crop/1642x512/157,461/-/preview/" style="height: 203px; width: 650px;"></p>
+<p style="text-align: center;"><img alt="" src="" style="height: 203px; width: 650px;"></p>
 
 <p style="text-align: center;"><그림 2> 모형 비행기의 이동 경로</p>
 
 <p>위의 예시에서, 각 칸에 적힌 수는 그 칸에 부여된 점수이고, 수가 적혀 있지 않은 칸의 점수는 0이라고 가정하자. 그리고 모형 비행기가 1, 2, ..., 15의 순서대로 비행을 했다고 가정하자.</p>
 
-<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/ce6860ed-a632-4cf4-951f-cd7912f83796/-/crop/1652x525/149,453/-/preview/" style="height: 207px; width: 650px;"></p>
+<p style="text-align: center;"><img alt="" src="" style="height: 207px; width: 650px;"></p>
 
 <p style="text-align: center;"><그림 3> 상승 비행의 이동 경로</p>
 
-<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/c2108165-cc33-4c13-9231-988ee14ecd2e/-/crop/1642x512/152,461/-/preview/" style="height: 203px; width: 650px;"></p>
+<p style="text-align: center;"><img alt="" src="" style="height: 203px; width: 650px;"></p>
 
 <p style="text-align: center;"><그림 4> 하강 비행의 이동 경로</p>
 
