@@ -4,38 +4,34 @@ input = sys.stdin.readline
 
 n = int(input())
 
-words = [sorted(list(input().rstrip())) for _ in range(n)]
-
 
 def backtracking(depth, path):
-    global word_len, visit, exist, answer, word
+    global word, answer, visit, exist
 
-    if depth == word_len:
+    if depth == len(word):
         answer.append(''.join(path))
         return
 
-    for i in range(word_len):
+    for i in range(len(word)):
         if visit[i]:
             continue
-
+        
         visit[i] = True
         path.append(word[i])
-        if exist.get(''.join(path)) is None:
-            exist[''.join(path)] = True
+        ret = ''.join(path)
+        if exist.get(ret) is None:
+            exist[ret] = True
             backtracking(depth + 1, path)
-        
         path.pop()
         visit[i] = False
-            
 
-for word in words:
-    word_len = len(word)
-    visit = [False] * word_len
-    exist = {}
 
+for _ in range(n):
     answer = []
+    word = sorted(list(input().rstrip()))
+    visit = [False] * len(word)
+    exist = {}
+    
     backtracking(0, [])
-
+    
     print('\n'.join(answer))
-    
-    
