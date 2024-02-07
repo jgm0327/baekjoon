@@ -16,36 +16,37 @@ for i in range(1, n + 1):
 
 s, e = map(int, input().split())
 
+route = [0] * (n + 1)
 
-def bfs(start, end, cnt, v):
+def bfs(start, end, cnt, route):
     global graph, n
-
+    
     visit = [False] * (n + 1)
     visit[start] = True
 
-    for i in range(1, n + 1):
-        if v & (1 << i) == 0:
-            continue
-        visit[i] = True
-    
+    idx = route[start]
+    while idx > 0:
+        visit[idx] = True
+        idx = route[idx]
+    visit[end] = False
+
     que = deque()
-    que.append((start, cnt, v))
+    que.append((start, cnt))
 
     while que:
-        sour, cur_cnt, path = que.popleft()
+        sour, cur_cnt = que.popleft()
 
         for des in graph[sour]:
-            if des == end:
-                return (cur_cnt + 1, path)
-            
             if visit[des]:
                 continue
-            
+
+            que.append((des, cur_cnt + 1))
             visit[des] = True
-            que.append((des, cur_cnt + 1, path | (1 << des)))
+            route[des] = sour
+            
+            if des == end:
+                return cur_cnt + 1
 
 
-cnt, v = bfs(s, e, 0, 0)
-answer, v = bfs(e, s, cnt, v)
-
-print(answer)
+cnt = bfs(s, e, 0, route)
+print(bfs(e, s, cnt, route))
