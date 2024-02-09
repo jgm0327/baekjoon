@@ -41,7 +41,7 @@ def bfs(s, e):
             if visit[ny][nx][i] <= visit[y][x][direction] + plus:
                 continue
             
-            visit[ny][nx][i] = min(visit[ny][nx][i], visit[y][x][direction] + plus)
+            visit[ny][nx][i] = visit[y][x][direction] + plus
 
             if e[0] == ny and e[1] == nx:
                 continue
