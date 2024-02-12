@@ -1,16 +1,16 @@
-from sys import stdin
-from collections import defaultdict
+for _ in range(int(input())):
+    n = int(input())
+    clothes = {}
 
-n = int(stdin.readline())
-for _ in range(n):
-    a = int(stdin.readline())
-    clothes = defaultdict(int)
-    for i in range(a):
-        name, type_ = stdin.readline().rstrip().split()
-        clothes[type_] += 1
-    answer = 1
-    for key in clothes.keys():
-        answer *= (clothes[key] + 1)
-    print(answer - 1)
-    
-    
+    for name, _type in [list(input().rstrip().split()) for i in range(n)]:
+        if clothes.get(_type) is None:
+            clothes[_type] = []
+
+        clothes[_type].append(name)
+
+    total = 1
+
+    for _type in clothes.keys():
+        total *= (len(clothes[_type]) + 1)
+
+    print(total - 1)
