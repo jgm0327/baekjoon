@@ -1,40 +1,46 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
-class Main{
-    
+public class Main {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine());
 
-        StringBuilder sb = new StringBuilder();
-        while(T-- > 0){
+        int t = Integer.parseInt(br.readLine());
+
+        StringBuilder answer = new StringBuilder();
+
+        while(t-- > 0){
             int n = Integer.parseInt(br.readLine());
-            int[][] arr = new int[n][2];
+            List<int[]> employees = new ArrayList<>();
+
             for(int i=0 ; i<n ; i++){
                 StringTokenizer stk = new StringTokenizer(br.readLine());
-                arr[i][0] = Integer.parseInt(stk.nextToken());
-                arr[i][1] = Integer.parseInt(stk.nextToken());
+                int document = Integer.parseInt(stk.nextToken()), interview = Integer.parseInt(stk.nextToken());
+
+                employees.add(new int[]{document, interview});
             }
 
-            Arrays.sort(arr, (o1, o2) -> {
-                if(o1[0] != o2[0])return o1[0] - o2[0];
-                else return o1[1] - o2[1];
-            });
+            Collections.sort(employees, (o1, o2) -> o1[0] - o2[0]);
 
-            int temp = arr[0][1], answer = 0;
-            for(int i=0 ; i<n; i++){
-                if(temp >= arr[i][1]){
-                    temp = arr[i][1];
-                    answer++;
-                }
+            int prev = employees.get(0)[1];
+            int count = 0;
+
+            for(int i=0 ; i <n ; i++){
+                if(prev >= employees.get(i)[1])
+                    count++;
+
+                prev = Math.min(prev, employees.get(i)[1]);
             }
-            sb.append(answer).append("\n");
+
+            answer.append(count).append("\n");
         }
-        System.out.print(sb);
-        br.close();
-    }
+
+        System.out.println(answer);
+    }    
 }
