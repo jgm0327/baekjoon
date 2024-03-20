@@ -36,7 +36,7 @@ class Main{
             words.add(contain);
         }
 
-        answer = 0;
+        answer = characterCount == 21 ? n : 0;
 
         visit = new HashMap<>();
         visit.put(path, true);
@@ -47,7 +47,7 @@ class Main{
     }
 
     private static void dfs(int depth, int start, int path){
-        if(characterCount < 0)return;
+        if(characterCount < 0 || characterCount == 21)return;
 
         if(depth == characterCount){
             count(path);            
