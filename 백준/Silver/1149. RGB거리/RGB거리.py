@@ -1,15 +1,16 @@
 import sys
 
-n = int(sys.stdin.readline())
-sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
 
-house = []
-for _ in range(n):
-    house.append(list(map(int, sys.stdin.readline().split())))
+n = int(input())
 
-for i in range(1, n):
-    house[i][0] += min(house[i - 1][1], house[i - 1][2])
-    house[i][1] += min(house[i - 1][0], house[i - 1][2])
-    house[i][2] += min(house[i - 1][1], house[i - 1][0])
+houses = [[]] + [list(map(int, input().split())) for _ in range(n)]
 
-print(min(house[n-1]))
+dp = [[0] * 3 for _ in range(n + 1)]
+
+for i in range(1, n + 1):
+    dp[i][0] = min(dp[i-1][1], dp[i-1][2]) + houses[i][0]
+    dp[i][1] = min(dp[i-1][0], dp[i-1][2]) + houses[i][1]
+    dp[i][2] = min(dp[i-1][1], dp[i-1][0]) + houses[i][2]
+
+print(min(dp[-1]))
