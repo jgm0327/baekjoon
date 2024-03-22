@@ -1,24 +1,30 @@
-from bisect import bisect_left
-
 n = int(input())
 
-electric_wires = [0] * (501)
-wire_idx = {}
+wires = sorted([list(map(int, input().split())) for _ in range(n)], key=lambda x: x[0])
 
-for sour, des in [map(int, input().split()) for _ in range(n)]:
-    electric_wires[sour] = des
-    wire_idx[sour] = True
+def binary_search(dp, number):
+    left, right = 0, len(dp) - 1
 
-dp = []
+    while left <= right:
+        mid = (left + right) // 2
 
-for idx in sorted(wire_idx.keys()):
-    electric_wire = electric_wires[idx]
+        if dp[mid] < number:
+            left = mid + 1
+        else:
+            right = mid - 1
 
-    if not dp or dp[-1] < electric_wire:
-        dp.append(electric_wire)
+    return left
+
+
+dp = [wires[0][1]]
+
+for wire in wires[1:]:
+    if dp[-1] < wire[1]:
+        dp.append(wire[1])
         continue
 
-    change_idx = bisect_left(dp, electric_wire)
-    dp[change_idx] = electric_wire
+    idx = binary_search(dp, wire[1])
+    dp[idx] = wire[1]
 
 print(n - len(dp))
+
