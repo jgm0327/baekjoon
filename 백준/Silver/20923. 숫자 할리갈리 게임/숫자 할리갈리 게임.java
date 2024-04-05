@@ -27,8 +27,6 @@ class Main{
         ArrayDeque<Integer> dummy1 = new ArrayDeque<>();
         ArrayDeque<Integer> dummy2 = new ArrayDeque<>();
 
-        boolean flag = false;
-
         for(int i=0 ; i<m ; i++){
 
             if(i % 2 == 0){
@@ -40,7 +38,6 @@ class Main{
             }
 
             if(p1.isEmpty() || p2.isEmpty()){
-                flag = true;
                 break;
             }
 
@@ -57,19 +54,13 @@ class Main{
         }
 
         String answer = "";
-        if(flag){
-            if(p2.isEmpty())answer="do";
-            else answer = "su";
+        if(p2.isEmpty() || p1.size() > p2.size()){
+            answer = "do";
         }
-        else{
-            if(p1.size() > p2.size()){
-                answer = "do";
-            }
-            else if(p1.size() < p2.size()){
-                answer = "su";
-            }else{
-                answer = "dosu";
-            }
+        else if(p1.isEmpty() || p1.size() < p2.size()){
+            answer = "su";
+        }else{
+            answer = "dosu";
         }
 
         System.out.println(answer);
