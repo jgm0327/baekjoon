@@ -1,51 +1,47 @@
-from sys import stdin
-import heapq
+import sys
+from heapq import heappop, heappush
 
-input = stdin.readline
+input = sys.stdin.readline
 
 n, m = map(int, input().split())
+s = int(input())
 
-v = int(input())
-
-INF = int(1e9)
-graph = [{} for _ in range(n + 1)]
+graph = [[] for _ in range(n + 1)]
 
 for _ in range(m):
     sour, des, cost = map(int, input().split())
-    if graph[sour].get(des) is None:
-        graph[sour][des] = INF
-    graph[sour][des] = min(cost, graph[sour][des])
+    graph[sour].append((des, cost))
     
 
-def dijkstra(start, _n, _INF):
-    heap = []
-    
-    costs = [INF] * (_n + 1)
+def dijkstra(start):
+    global graph, n
+    INF = int(1e9)
+    costs = [INF] * (n + 1)
     costs[start] = 0
     
-    heapq.heappush(heap, (0, start))
-
+    heap = []
+    heappush(heap, (0, start))
+    
     while heap:
-        cur_cost, sour = heapq.heappop(heap)
-
+        cur_cost, sour = heappop(heap)
+        
         if costs[sour] < cur_cost:
             continue
         
-        for des in graph[sour].keys():
-            next_cost = graph[sour][des] + cur_cost
+        for des, cost in graph[sour]:
+            nextCost = cost + cur_cost
             
-            if next_cost >= costs[des]:
+            if costs[des] <= nextCost:
                 continue
-
-            costs[des] = next_cost
-            heapq.heappush(heap, (next_cost, des))
+               
+            costs[des] = nextCost
+            heappush(heap, (nextCost, des))
             
-    print_value(costs, INF)
-
-
-def print_value(array, _INF):
-    for data in array[1:]:
-        print('INF' if _INF == data else data)
-
-
-dijkstra(v, n, INF)
+    for i in range(1, n + 1):
+        if INF == costs[i]:
+            print('INF')
+        else:
+            print(costs[i])
+            
+            
+dijkstra(s)
