@@ -1,67 +1,57 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Main {
-    private static int n, m;
-    private static int[][] cities;
+class Main {
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        m = Integer.parseInt(br.readLine());
 
-        cities = new int[n + 1][n + 1];
+        int n = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
+        
+        int[][] graph = new int[n + 1][n + 1];
 
-        for(int i=0 ; i<=n ; i++){
-            for(int j=0 ; j<=n ; j++){
-                cities[i][j] = i == j ? 0 : Integer.MAX_VALUE;
+        for(int i=1 ; i<=n ; i++){
+            for(int j=1 ; j<=n ; j++){
+                if(i == j)continue;
+                graph[i][j] = Integer.MAX_VALUE;
             }
         }
 
-        for(int i=0 ; i<m ; i++){
-            StringTokenizer stk = new StringTokenizer(br.readLine());
-            int sour = Integer.parseInt(stk.nextToken()), 
-            des = Integer.parseInt(stk.nextToken()),
-             cost = Integer.parseInt(stk.nextToken());
+        while(m-- > 0) {
+            StringTokenizer tokenizer = new StringTokenizer(br.readLine());
+            int sour, des, weight;
 
-             cities[sour][des] = Math.min(cities[sour][des], cost);
+            sour = Integer.parseInt(tokenizer.nextToken());
+            des = Integer.parseInt(tokenizer.nextToken());
+            weight = Integer.parseInt(tokenizer.nextToken());
+
+            graph[sour][des] = Math.min(weight, graph[sour][des]);
         }
 
-        solution();
-    }
+        for(int k=1 ; k<=n ; k++){
+            for(int i=1 ; i<=n ; i++){
+                for(int j=1 ; j<=n ; j++){
+                    if(graph[i][k] == Integer.MAX_VALUE || graph[k][j] == Integer.MAX_VALUE)
+                        continue;
 
-    private static void solution(){
-        long[][] costs = new long[n + 1][n + 1];
-        for(int i=0 ; i<=n ; i++){
-            for(int j=0 ; j<=n ; j++){
-                costs[i][j] = i == j ? 0 : Integer.MAX_VALUE;
-                costs[i][j] = Integer.MAX_VALUE != cities[i][j] ? cities[i][j] : costs[i][j];
-            }
-        }
-
-        for(int k=0 ; k<=n ; k++){
-            for(int i=0 ; i<=n ; i++){
-                for(int j=0 ; j<=n ; j++){
-                    costs[i][j] = Math.min(costs[i][j], costs[i][k] + costs[k][j]);
+                    graph[i][j] = Math.min(graph[i][j], graph[i][k] + graph[k][j]);
                 }
             }
         }
 
-        printAnswer(costs);
-    }
-
-    private static void printAnswer(long[][] costs){
         StringBuilder answer = new StringBuilder();
 
         for(int i=1 ; i<=n ; i++){
             for(int j=1 ; j<=n ; j++){
-                answer.append(costs[i][j] != Integer.MAX_VALUE ? costs[i][j] : 0).append(" ");        
+                answer.append(graph[i][j] == Integer.MAX_VALUE ? 0 : graph[i][j]).append(" ");
             }
             answer.append("\n");
         }
 
-        System.out.println(answer);
+        System.out.print(answer);
     }
 }
