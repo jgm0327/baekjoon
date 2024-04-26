@@ -1,82 +1,80 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class Main {
+class Main {
+
     private static int n;
-    private static Map<Integer, Integer>[] graph;
-    
+    private static List<int[]>[] graph;
+
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer stk = new StringTokenizer(br.readLine());
 
-        n = Integer.parseInt(stk.nextToken());
-        int m = Integer.parseInt(stk.nextToken());
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
 
-        graph = new HashMap[n + 1];
-        for(int i=0 ; i<=n ; i++){
-            graph[i] = new HashMap<>();
-        }
+        n = Integer.parseInt(tokenizer.nextToken());
+        int m = Integer.parseInt(tokenizer.nextToken());
 
         int start = Integer.parseInt(br.readLine());
 
-        for(int i=0 ;i<m ; i++){
-            stk = new StringTokenizer(br.readLine());
+        graph = new ArrayList[n + 1];
 
-            int sour = Integer.parseInt(stk.nextToken()),
-            des = Integer.parseInt(stk.nextToken()),
-            cost = Integer.parseInt(stk.nextToken());
-
-            if(graph[sour].containsKey(des) && graph[sour].get(des) <= cost){
-                continue;
-            }
-
-            graph[sour].put(des, cost);
+        for(int i=1 ; i<=n ; i++){
+            graph[i] = new ArrayList<>();
         }
 
-        dijkstra(start);
-        
+        while(m-- > 0){
+            tokenizer = new StringTokenizer(br.readLine());
+            int sour, des, cost;
+
+            sour = Integer.parseInt(tokenizer.nextToken());
+            des = Integer.parseInt(tokenizer.nextToken());
+            cost = Integer.parseInt(tokenizer.nextToken());
+
+            graph[sour].add(new int[]{des, cost});
+        }
+
+        int[] costs = dijkstra(start);
+        StringBuilder answer = new StringBuilder();
+
+        for(int i=1 ; i<=n ; i++){
+            answer.append(costs[i] == Integer.MAX_VALUE ? "INF" : costs[i]).append("\n");
+        }
+
+        System.out.print(answer);
     }
 
-    private static void dijkstra(int start){
+    private static int[] dijkstra(int start){
         PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]);
 
         int[] costs = new int[n + 1];
         Arrays.fill(costs, Integer.MAX_VALUE);
-
         costs[start] = 0;
+
         pq.add(new int[]{start, 0});
 
-        while(!pq.isEmpty()){
+        while(!pq.isEmpty()) {
             int[] cur = pq.poll();
             int sour = cur[0], cost = cur[1];
 
-            if(costs[sour] < cost)continue;
+            if(costs[sour] < cost)
+                continue;
 
-            for(int des : graph[sour].keySet()){
-                int nextCost = graph[sour].get(des) + cost;
-
-                if(nextCost >= costs[des])continue;
-
+            for(int[] next : graph[sour]){
+                int des = next[0], nextCost = next[1] + cost;
+                if(nextCost >= costs[des])
+                    continue;
+                
                 costs[des] = nextCost;
                 pq.add(new int[]{des, nextCost});
             }
         }
 
-        printValue(costs);
+        return costs;
     }
-
-    private static void printValue(final int[] costs){
-        StringBuilder answer = new StringBuilder();
-        for(int i=1 ; i<=n ; i++){
-            answer.append(costs[i] != Integer.MAX_VALUE ? costs[i] : "INF").append("\n");
-        }
-        System.out.println(answer);
-    }
-
 }
