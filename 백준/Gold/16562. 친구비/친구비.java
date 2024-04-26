@@ -6,74 +6,63 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 class Main{
-
-    private static int n, m, k;
-    private static int[] parents;
-    private static int[] money;
+    private static int n, money;
+    private static int[] parents, costs;
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        StringTokenizer stk = new StringTokenizer(br.readLine());
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
 
-        n = Integer.parseInt(stk.nextToken());
-        m = Integer.parseInt(stk.nextToken());
-        k = Integer.parseInt(stk.nextToken());
-
+        n = Integer.parseInt(tokenizer.nextToken());
+        int m = Integer.parseInt(tokenizer.nextToken());
+        money = Integer.parseInt(tokenizer.nextToken());
+        
         parents = new int[n + 1];
-        for(int i=0 ; i<=n ; i++){
-            parents[i] = i;
-        }
-
-        money = new int[n + 1];
-        stk = new StringTokenizer(br.readLine());
-
+        costs = new int[n + 1];
+        tokenizer = new StringTokenizer(br.readLine());
         for(int i=1 ; i<=n ; i++){
-            money[i] = Integer.parseInt(stk.nextToken());
+            parents[i] = i;
+            costs[i] = Integer.parseInt(tokenizer.nextToken());
         }
 
-        for(int i=0 ; i<m ; i++){
-            stk = new StringTokenizer(br.readLine());
-            int v, w;
+        while(m-- > 0){
+            tokenizer = new StringTokenizer(br.readLine());
+            int x, y;
 
-            v = Integer.parseInt(stk.nextToken());
-            w = Integer.parseInt(stk.nextToken());
+            x = Integer.parseInt(tokenizer.nextToken());
+            y = Integer.parseInt(tokenizer.nextToken());
 
-            union(v, w);
+            union(x, y);
         }
 
         Map<Integer, Boolean> visit = new HashMap<>();
-        int answer = 0;
-        for(int x=1 ; x<=n ; x++){
-            int px = findParent(x);
-
-            if(visit.containsKey(px)){
+        long answer = 0;
+        for(int i=1 ; i<=n ; i++){
+            int px = findParent(parents[i]);
+            if(visit.containsKey(px))
                 continue;
-            }
 
+            answer += costs[px];
             visit.put(px, true);
-            answer += money[px];
         }
 
-        System.out.println(answer <= k ? answer : "Oh no");
+        System.out.println(answer == 0 || answer > money ? "Oh no" : answer);
     }
-
+    
     private static int findParent(int x){
-        if(x == parents[x]){
+        if(x == parents[x])
             return x;
-        }
-
         return parents[x] = findParent(parents[x]);
     }
 
     private static void union(int x, int y){
         int px = findParent(x), py = findParent(y);
 
-        if(px == py){
+        if(px == py)
             return;
-        }
 
-        if(money[py] < money[px]){
+        if(costs[py] < costs[px]){
             int temp = py;
             py = px;
             px = temp;
@@ -81,4 +70,5 @@ class Main{
 
         parents[py] = px;
     }
+
 }
