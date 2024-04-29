@@ -1,60 +1,64 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 class Main{
-    private static int n, answer = Integer.MAX_VALUE;
-    private static int[][] scores;
+
+    private static int n, answer;
+    private static int[][] status;
     private static boolean[] visit;
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         n = Integer.parseInt(br.readLine());
-        visit = new boolean[n];
-        scores = new int[n][n];
+
+        status = new int[n][n];
 
         for(int i=0 ; i<n ; i++){
-            StringTokenizer stk = new StringTokenizer(br.readLine());
+            StringTokenizer tokenizer = new StringTokenizer(br.readLine());
             for(int j=0 ; j<n ; j++){
-                scores[i][j] = Integer.parseInt(stk.nextToken());
+                status[i][j] = Integer.parseInt(tokenizer.nextToken());
             }
         }
 
-        divideTeam(0, 0);
+        answer = Integer.MAX_VALUE;
+        visit = new boolean[n];
+
+        backtracking(0, 0);
+
         System.out.println(answer);
-        br.close();
     }
 
-    private static void divideTeam(int start, int depth){
+    private static void backtracking(int depth, int start){
         if(depth == n / 2){
-            getDiff();
+            answer = Math.min(answer, diff());
             return;
         }
 
         for(int i=start ; i<n ; i++){
             if(visit[i])continue;
+
             visit[i] = true;
-            divideTeam(i + 1, depth + 1);
+            backtracking(depth + 1, i + 1);
             visit[i] = false;
-        }      
+        }
     }
 
-    private static void getDiff(){
-        int total1 = 0, total2 = 0;
-        for(int i = 0 ; i < n ; i++){
-            for(int j = i + 1 ; j < n ; j++){
-                int sum = (scores[i][j] + scores[j][i]);
-                if(visit[i] && visit[j]){
-                    total1 += sum;
-                }else if(!visit[i] && !visit[j]){
-                    total2 += sum;
-                }
+    private static int diff(){
+
+        int status1 = 0, status2 = 0;
+        for(int i=0 ; i<n ; i++){
+            for(int j=1+i ; j<n ; j++){
+                int total = (status[i][j] + status[j][i]);
+                if(visit[i] && visit[j])status1 += total;
+                else if(!visit[i] && !visit[j])status2 += total;
             }
         }
-        answer = Math.min(answer, Math.abs(total1 - total2));
+        return Math.abs(status1 - status2);
     }
 }
