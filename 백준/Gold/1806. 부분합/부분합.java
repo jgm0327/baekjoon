@@ -29,14 +29,14 @@ class Main{
 
         int left = 0, right = 0, total = 0;
 
-        while(left <= right && left < n){
+        while(left <= right){
 
-            if(right >= n || total >= m){
-                if(total >= m)
-                    ret = Math.min(ret, (right - left));
+            if(total >= m){
+                ret = Math.min(ret, (right - left));
                 total -= numbers[left++];
             }
-            else if(right < n){
+            else{
+                if(right >= n)break;
                 total += numbers[right++];
             }
 
