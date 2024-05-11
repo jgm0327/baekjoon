@@ -7,7 +7,6 @@ class Main{
 
     private static int n;
     private static int[] graph;
-    private static boolean flag;
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,6 +14,7 @@ class Main{
         int t = Integer.parseInt(br.readLine());
 
         StringBuilder answer = new StringBuilder();
+        
         while(t-- > 0){
             n = Integer.parseInt(br.readLine());
 
@@ -43,12 +43,11 @@ class Main{
         boolean[] v = new boolean[n + 1];
 
         for(int i=1 ; i<=n ; i++){
-            flag = false;
 
             if(v[i])continue;
+
             dfs(i, v);
 
-            if(!flag)continue;
             ret++;
         }
 
@@ -61,7 +60,6 @@ class Main{
         v[sour] = true;
 
         if(v[des]){
-            flag = true;
             return;
         }
 
