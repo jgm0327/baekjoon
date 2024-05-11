@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 class Main{
     private static int n;
     private static int[] parents;
+    private static int[][] planets;
     private static PriorityQueue<int[]> pq;
 
     public static void main(String[] args) throws IOException{
@@ -15,6 +16,7 @@ class Main{
         n = Integer.parseInt(br.readLine());
 
         parents = new int[n];
+        planets = new int[n][n];
 
         pq = new PriorityQueue<>((o1, o2) -> o1[2] - o2[2]);
 
@@ -25,7 +27,13 @@ class Main{
         for(int i=0 ; i<n ; i++){
             StringTokenizer tokenizer = new StringTokenizer(br.readLine());
             for(int j=0 ; j<n ; j++){
-                pq.add(new int[]{i, j, Integer.parseInt(tokenizer.nextToken())});
+                planets[i][j] = Integer.parseInt(tokenizer.nextToken());
+            }
+        }
+
+        for(int i=0 ; i<n ; i++){
+            for(int j=i+1 ; j<n ; j++){
+                pq.add(new int[]{i, j, planets[i][j]});
             }
         }
 
