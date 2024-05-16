@@ -23,12 +23,14 @@ class Main{
                 numbers.put(Integer.parseInt(tokenizer.nextToken()), true);
             }
 
-            int m = Integer.parseInt(br.readLine());
+            br.readLine();
 
             tokenizer = new StringTokenizer(br.readLine());
             while(tokenizer.hasMoreTokens()){
                 int number = Integer.parseInt(tokenizer.nextToken());
-                answer.append(numbers.containsKey(number) ? 1 : 0).append("\n");
+                int ret = 0;
+                if(numbers.containsKey(number))ret = 1;
+                answer.append(ret).append("\n");
             }
         }
 
