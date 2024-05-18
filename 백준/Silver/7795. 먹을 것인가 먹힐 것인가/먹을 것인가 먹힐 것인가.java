@@ -4,9 +4,10 @@ public class Main {
     static int arr[] = new int[20001], brr[] = new int[20001], n, m;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         int testcase = Integer.parseInt(br.readLine());
+
+        StringBuilder answer = new StringBuilder();
 
         for(int t=0; t<testcase; t++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
@@ -27,11 +28,10 @@ public class Main {
             Arrays.sort(brr, 1, m + 1);
 
             for(int i=1 ; i<=n ; i++) ret += check(arr[i]);
-
-            bw.write(String.valueOf(ret)+"\n");
+            answer.append(ret).append("\n");
         }
 
-        bw.close();
+        System.out.print(answer);
     }
 
     static int check(int num) {
