@@ -1,26 +1,30 @@
-n, m = map(int, input().split())
+import sys
 
-lan_wires = [int(input()) for _ in range(n)]
 
-left, right = 1, 2 ** 31 - 1
-answer = 0
+def solution():
+    k, n = map(int, sys.stdin.readline().split())
+    lan_cables = []
+    for _ in range(k):
+        lan_cables.append(int(sys.stdin.readline()))
 
-while left <= right:
-    mid = (left + right) // 2
+    start, end = 0, (2**31 - 1)
+    result = 0
 
-    total = 0
+    while start <= end:
+        total_cut_cable = 0
+        mid = int((start + end) / 2)
 
-    for wire in lan_wires:
-        if wire < mid:
-            continue
+        for cable in lan_cables:
+            if mid:
+                total_cut_cable += int(cable / mid)
 
-        total += (wire // mid)
+        if n > total_cut_cable:
+            end = mid - 1
+        else:
+            start = mid + 1
+            result = result if result > mid else mid
 
-    if total < m:
-        right = mid - 1
-        
-    else:
-        answer = max(answer, mid)
-        left = mid + 1
+    print(result)
 
-print(answer)
+
+solution()
