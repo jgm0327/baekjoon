@@ -1,47 +1,52 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
+public class Main {
+    static int arr[] = new int[20001], brr[] = new int[20001], n, m;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-class Main{
+        int testcase = Integer.parseInt(br.readLine());
 
-  public static void main(String[] args) throws IOException{
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    int T = Integer.parseInt(br.readLine());
-    int n, m;
+        for(int t=0; t<testcase; t++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
 
-    while(T-- > 0){
-      String[] size = br.readLine().split(" ");
-      n = Integer.parseInt(size[0]);
-      m = Integer.parseInt(size[1]);
-      int[] arr1 = new int[n], arr2 = new int[m];
+            n = Integer.parseInt(st.nextToken());
+            m = Integer.parseInt(st.nextToken());
 
-      String[] str = br.readLine().split(" ");
-      for(int i=0 ; i<n ; i++){
-        arr1[i] = Integer.parseInt(str[i]);
-      }
+            int ret = 0;
 
-      str = br.readLine().split(" ");
-      for(int i=0 ; i<m ; i++){
-        arr2[i] = Integer.parseInt(str[i]);
-      }
+            st = new StringTokenizer(br.readLine());
+            arr = new int[n + 1];
+            for (int i=1; i<=n; i++) arr[i] = Integer.parseInt(st.nextToken());
 
-      Arrays.sort(arr1);
-      Arrays.sort(arr2);
-      int ans = 0;
-      for(int i=0 ; i<n ; i++){
-        for(int j=0 ; j<m ; j++){
-          if(arr1[i] <= arr2[j])break;
-          ans++;
+            st = new StringTokenizer(br.readLine());
+            brr = new int[m + 1];
+            for (int i=1; i<=m; i++) brr[i] = Integer.parseInt(st.nextToken());
+
+            //=======================================================================
+
+            Arrays.sort(brr);
+
+            for(int num : arr) ret += check(num);
+
+            bw.write(String.valueOf(ret)+"\n");
         }
-      }
-      bw.write(ans+"\n");
+
+        bw.close();
     }
-    bw.flush();
-    bw.close();
-    br.close();
-  }
+
+    static int check(int num) {
+
+        int l = 1, r = m;
+
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            
+            if(brr[mid] >= num) r = mid - 1;
+            else l = mid + 1;
+        }
+
+        return r;
+    }
 }
