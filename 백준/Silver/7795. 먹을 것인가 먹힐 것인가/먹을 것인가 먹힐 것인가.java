@@ -17,18 +17,16 @@ public class Main {
             int ret = 0;
 
             st = new StringTokenizer(br.readLine());
-            arr = new int[n + 1];
             for (int i=1; i<=n; i++) arr[i] = Integer.parseInt(st.nextToken());
 
             st = new StringTokenizer(br.readLine());
-            brr = new int[m + 1];
             for (int i=1; i<=m; i++) brr[i] = Integer.parseInt(st.nextToken());
 
             //=======================================================================
 
-            Arrays.sort(brr);
+            Arrays.sort(brr, 1, m + 1);
 
-            for(int num : arr) ret += check(num);
+            for(int i=1 ; i<=n ; i++) ret += check(arr[i]);
 
             bw.write(String.valueOf(ret)+"\n");
         }
