@@ -1,81 +1,87 @@
 class Solution {
     int answer = 0;
-    
     public int solution(String[] board) {
+        char[][] pattern = {{'.','.','.'},{'.','.','.'},{'.','.','.'}};
         
-        char[][] tempBoard = new char[3][3];
-        for(int i=0 ; i<3 ; i++){
-            for(int j=0 ; j<3 ; j++)
-                tempBoard[i][j] = '.';
-        }
-        
-        dfs(0, board, tempBoard);
-        
+        dfs(0, pattern, board);
         return answer;
     }
     
-    private void dfs(int depth, String[] board, char[][] tempBoard){
-        if(isSame(board, tempBoard)){
+    private boolean isOver(char[][] pattern){
+        
+        for(int i=0 ; i<3 ; i++){
+            int oCnt1 = 0, xCnt1 = 0, oCnt2 = 0, xCnt2 = 0;
+            
+            for(int j=0 ; j<3 ; j++){
+                char shape1 = pattern[i][j];
+                char shape2 = pattern[j][i];
+                
+                if(shape1 == 'O')oCnt1++;
+                else if(shape1 == 'X')xCnt1++;
+                
+                if(shape2 == 'O')oCnt2++;
+                else if(shape2 == 'X')xCnt2++;
+            }
+            
+            if(oCnt1 == 3 || xCnt2 == 3 || xCnt1 == 3 || oCnt2 == 3)
+                return true;
+        }
+        
+        int oCnt1 = 0, xCnt1 = 0, oCnt2 = 0, xCnt2 = 0;
+            for(int i=0 ; i<3 ; i++){
+                char shape1 = pattern[i][i];
+                char shape2 = pattern[i][2 - i];
+                
+                if(shape1 == 'O')oCnt1++;
+                else if(shape1 == 'X')xCnt1++;
+                
+                if(shape2 == 'O')oCnt2++;
+                else if(shape2 == 'X')xCnt2++;
+            }
+        
+        
+            if(oCnt1 == 3 || xCnt2 == 3 || xCnt1 == 3 || oCnt2 == 3)
+                return true;
+        
+        return false;
+    }
+    
+    private void dfs(int depth, char[][] pattern, final String[] board){
+        if(check(board, pattern)){
             answer = 1;
             return;
         }
         
-        if(isEnd(tempBoard))return;
+        if(isOver(pattern))
+            return;
+        
+        char shape = 'O';
+        if(depth % 2 == 1)
+            shape = 'X';
         
         for(int i=0 ; i<3 ; i++){
             for(int j=0 ; j<3 ; j++){
-                if(tempBoard[i][j] != '.')continue;
+                if(pattern[i][j] != '.')
+                    continue;
                 
-                if(depth % 2 == 0)tempBoard[i][j] = 'O';
-                else tempBoard[i][j] = 'X';
+                pattern[i][j] = shape;
                 
-                dfs(depth + 1, board, tempBoard);
-                
+                dfs(depth + 1, pattern, board);
                 if(answer == 1)return;
                 
-                tempBoard[i][j] = '.';
+                pattern[i][j] = '.';
             }
         }
     }
     
-    private boolean isSame(String[] board, char[][] tempBoard){
+    private boolean check(String[] board, char[][] pattern){
         for(int i=0 ; i<3 ; i++){
             for(int j=0 ; j<3 ; j++){
-                if(board[i].charAt(j) != tempBoard[i][j])
+                if(board[i].charAt(j) != pattern[i][j])
                     return false;
             }
         }
         
         return true;
-    }
-    
-    private boolean isEnd(char[][] board){
-        int cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0;
-        
-        for(int i=0 ; i<3 ; i++){
-            cnt1 = cnt2 = 0;
-            
-            for(int j=0 ; j<2 ; j++){
-                
-                if(board[i][j] != '.' && board[i][j] == board[i][j+1]){
-                    cnt1++;
-                }
-                
-                if(board[j][i] != '.' && board[j][i] == board[j+1][i]){
-                    cnt2++;
-                }
-                
-                if(cnt1 == 2 || cnt2 == 2)break;
-            }
-            
-            if(cnt1 == 2 || cnt2 == 2)break;
-        }
-        
-        for(int i=0 ; i<2 ; i++){
-            if(board[i][i] == board[i+1][i+1] && board[i][i] != '.')cnt3++;
-            if(board[i][2 - i] == board[i+1][1 - i] && board[i][2 - i] != '.')cnt4++;
-        }
-        
-        return cnt1 == 2 || cnt2 == 2 || cnt3 == 2 || cnt4 == 2;
     }
 }
