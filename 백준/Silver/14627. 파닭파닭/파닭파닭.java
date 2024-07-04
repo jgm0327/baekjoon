@@ -1,59 +1,50 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.OutputStreamWriter;
+import java.util.StringTokenizer;
 
-class Main{
-    public static void main(String[] args) throws IOException{
+class Main {
+    
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        String[] split = br.readLine().split(" ");
-        int n = Integer.parseInt(split[0]);
-        int m = Integer.parseInt(split[1]);
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
 
-        int[] arr = new int[n];
-        for(int i=0 ; i<n ; i++){
-            arr[i] = Integer.parseInt(br.readLine());
+        int s = Integer.parseInt(tokenizer.nextToken());
+        int c = Integer.parseInt(tokenizer.nextToken());
+
+        long[] greenOnions = new long[s];
+        long total = 0;
+        for(int i=0 ; i<s ; i++){
+            greenOnions[i] = Integer.parseInt(br.readLine());
+            total += greenOnions[i];
         }
 
-        Arrays.sort(arr);
+        long left = 0, right = Integer.MAX_VALUE;
+        long answer = 0;
 
-        long left = 1, right = 1000000000, answer = 1;
         while(left <= right){
-            long mid = (left + right) / 2;
+            long mid = (left + right) / 2; // 양파의 최대 길이
+            long count = 0;
 
-            
-            long total = 0, remain = 0;
-            boolean flag = false;
+            for(long greenOnion : greenOnions){
+                long divide = greenOnion / mid;
 
-            for(int i=n - 1 ; i>=0 ; i--){
-                long amount = (arr[i] / mid);
-
-                if(flag){
-                    remain += arr[i];
-                    continue;
-                }
-
-                if(total + amount > m){
-                    flag = true;
-                    remain += (m - total) * mid;
-                    total = m;
-                    continue;
-                }
-
-                total += amount;
-                remain += (arr[i] % mid);
+                count += divide;
             }
 
-            if(total >= m){
+            if(count >= c){
                 left = mid + 1;
-                answer = remain;
+                answer =  total - mid * (count - (count - c));
+            }else{
+                right = mid - 1;
             }
-            else right = mid - 1;
         }
 
-        System.out.println(answer);
-
+        bw.write(Long.toString(answer));
+        bw.close();
     }
-
 }
