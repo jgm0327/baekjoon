@@ -3,7 +3,7 @@ import java.util.*;
 
 class Main {
     private static int n, k;
-    private static Queue<int[]> que;
+    private static ArrayDeque<int[]> que;
     private static Set<Integer> visit;
 
     public static void main(String[] args) throws IOException {
@@ -17,7 +17,7 @@ class Main {
 
         tokenizer = new StringTokenizer(br.readLine());
         visit = new HashSet<>();
-        que = new LinkedList<>();
+        que = new ArrayDeque<>();
         
         for(int i=0 ; i<n ; i++){
             int num = Integer.parseInt(tokenizer.nextToken());
