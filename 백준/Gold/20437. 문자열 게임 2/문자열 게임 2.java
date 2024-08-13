@@ -39,6 +39,7 @@ class Main {
 
         for(int i=0 ; i<str.length() ; i++){
             if(alphabet[str.charAt(i) - 'a'] < k)continue;
+            alphabet[str.charAt(i) - 'a']--;
             
             int count = 1;
             for(int j=i+1 ; j<str.length() ; j++){
