@@ -45,7 +45,7 @@ class Main {
     }
 
     private static long solution(final int[] prefixSum, int n){
-        if(prefixSum[n] % 4 != 0)
+        if(prefixSum[n] % 4 > 0)
             return 0;
 
 
@@ -56,7 +56,7 @@ class Main {
                     cnt++;
             }
 
-            return combination(cnt);
+            return (cnt - 1) * (cnt - 2) * (cnt - 3) / 6;
         }
 
         int k = prefixSum[n] / 4;
@@ -72,12 +72,6 @@ class Main {
         }
 
         return dp[4];
-    }
-
-    private static int combination(int n){
-        if(n < 3)return 0;
-
-        return (n * (n - 1) * (n - 2)) / 6;
     }
 
 }
