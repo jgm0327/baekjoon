@@ -50,7 +50,7 @@ class Main {
 
 
         if(prefixSum[n] == 0){
-            int cnt = 0;
+            long cnt = 0;
             for(int i=1 ; i<prefixSum.length ; i++){
                 if(prefixSum[i] == 0)
                     cnt++;
