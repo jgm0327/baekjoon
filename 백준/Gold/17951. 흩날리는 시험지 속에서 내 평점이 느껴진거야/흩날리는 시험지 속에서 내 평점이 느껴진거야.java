@@ -42,7 +42,7 @@ class Main {
             }
         }
 
-        System.out.println(right);
+        bw.write(String.valueOf(right));
 
         bw.flush();
         bw.close();
