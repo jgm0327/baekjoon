@@ -15,8 +15,6 @@ class Main {
 
     StringBuilder answer = new StringBuilder();
 
-    //(3-3+1)
-
     ArrayDeque<int[]> deque = new ArrayDeque<>();
 
     for(int i=0 ; i<n ; i++){
