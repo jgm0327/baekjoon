@@ -1,49 +1,36 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-class Main{
+class Main {
 
-    private static int n;
-    private static int[] numbers;
-
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        n = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine());
 
-        StringTokenizer stk = new StringTokenizer(br.readLine());
-        numbers = new int[n];
+        int[] numbers = new int[n];
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
 
         for(int i=0 ; i<n ; i++){
-            numbers[i] = Integer.parseInt(stk.nextToken());
+            numbers[i] = Integer.parseInt(tokenizer.nextToken());
         }
 
-        List<Integer> dp = new ArrayList<>();
-        dp.add(numbers[0]);
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        int answer = 1;
 
-        for(int i=1 ; i<n ; i++){
-            if(dp.get(dp.size() - 1) < numbers[i]){
-                dp.add(numbers[i]);
-                continue;
+        for(int i=0 ; i<n ; i++){
+
+            for(int j=i+1 ; j<n ; j++){
+                if(numbers[i] < numbers[j])
+                    dp[j] = Math.max(dp[j], dp[i] + 1);
+
+                answer = Math.max(dp[j], answer);
             }
-            binarySearch(dp, numbers[i]);
         }
 
-        System.out.println(dp.size());
-    }
+        System.out.println(answer);
 
-    private static void binarySearch(List<Integer> dp, int target){
-        int start = 0, end = dp.size() - 1;
-        int mid = 0;
-        while(start <= end){
-            mid = (start + end) / 2;
-            if(dp.get(mid) < target)start = mid + 1;
-            else end = mid - 1;
-        }
-        dp.set(start, target);
+        br.close();
     }
 }
