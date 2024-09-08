@@ -3,7 +3,7 @@ import java.util.*;
 
 class Main {
 
-    private static int n, leftX, rightX, downY, upY, answer;
+    private static int n, leftX, rightX, downY, upY, answer, cnt;
     private static int[][] board;
 
     private static double[][][] rateSandAmount = {
@@ -63,47 +63,32 @@ class Main {
 
         while(true){
             // 왼쪽 이동
-            while(x != leftX && x > 0){
-                int temp = spreadSand(0, y, x - 1);
-                if(x - 2 >= 0)board[y][x - 2] += board[y][x - 1] - temp;
-                else answer += board[y][x - 1] - temp;
-                board[y][x - 1] = 0;
-                x--;
-            }
-            
+            int[] pos = moveTornado(y, x, 0, -1, y, leftX, 0);
+            y = pos[0];
+            x = pos[1];
+
             if(y == 0 && x == 0){
                 break;
             }
             leftX--;
 
             // 아래쪽 이동
-            while(y != downY && y < n - 1){
-                int temp = spreadSand(1, y + 1, x);
-                if(y + 2 < n)board[y + 2][x] += board[y + 1][x] - temp;
-                else answer += board[y + 1][x] - temp;
-                board[y + 1][x] = 0;
-                y++;
-            }
+            pos = moveTornado(y, x, 1, 0, downY, x, 1);
+
+            y = pos[0];
+            x = pos[1];
             downY++;
 
             // 오른쪽 이동
-            while(x != rightX && x < n - 1){
-                int temp = spreadSand(2, y, x + 1);
-                if(x + 2 < n)board[y][x + 2] += board[y][x + 1] - temp;
-                else answer += board[y][x + 1] - temp;
-                board[y][x + 1] = 0;
-                x++;
-            }
+            pos = moveTornado(y, x, 0, 1, y, rightX, 2);
+            y = pos[0];
+            x = pos[1];
             rightX++;
 
             // 위쪽 이동
-            while(y != upY && y >= 0){
-                int temp = spreadSand(3, y - 1, x);
-                if(y - 2 >= 0)board[y - 2][x] += board[y - 1][x] - temp;
-                else answer += board[y - 1][x] - temp;
-                board[y - 1][x] = 0;
-                y--;
-            }
+            pos = moveTornado(y, x, -1, 0, upY, x, 3);
+            y = pos[0];
+            x = pos[1];
             upY--;
         }
 
@@ -114,6 +99,25 @@ class Main {
 
     private static boolean isIn(int y, int x){
         return 0 <= y && y < n && 0 <= x && x < n;
+    }
+
+    private static int[] moveTornado(int y, int x, int dy, int dx, int targetY, int targetX, int idx){
+        while((y != targetY || x != targetX) && isIn(y + dy, x + dx)){
+
+            int total = board[y + dy][x + dx] - spreadSand(idx, y + dy, x + dx);
+
+            if(isIn(y + dy * 2, x + dx * 2))
+                board[y + dy * 2][x + dx * 2] += total;
+            else 
+                answer += total;
+
+            board[y + dy][x + dx] = 0;
+            
+            y += dy;
+            x += dx;
+        }
+
+        return new int[]{y, x};
     }
 
     private static int spreadSand(int idx, int y, int x){
