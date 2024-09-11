@@ -1,66 +1,52 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-class Main{
-    static class Route implements Comparable<Route>{
-        int start, end;
-
-        public Route(int start, int end){
-            this.start = start;
-            this.end = end;
-        }
-
-        @Override
-        public int compareTo(Route o){
-            if(this.end != o.end )return this.end - o.end;
-            return this.start - o.start;
-        }
-    }
-    private static int n, m;
-    private static List<Route> routes;
-    
+class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        StringTokenizer stk = new StringTokenizer(br.readLine());
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
 
-        n = Integer.parseInt(stk.nextToken());
-        m = Integer.parseInt(stk.nextToken());
+        int n = Integer.parseInt(tokenizer.nextToken());
+        int m = Integer.parseInt(tokenizer.nextToken());
 
-        routes = new ArrayList<>();
-
+        List<int[]> passengerPos = new ArrayList<>();
         for(int i=0 ; i<n ; i++){
-            stk = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(stk.nextToken());
-            int end = Integer.parseInt(stk.nextToken());
+            tokenizer = new StringTokenizer(br.readLine());
+            int start = Integer.parseInt(tokenizer.nextToken());
+            int end = Integer.parseInt(tokenizer.nextToken());
+
             if(start <= end)continue;
 
-            routes.add(new Route(start, end));
+            passengerPos.add(new int[]{end, start});
         }
 
-        Collections.sort(routes);
+        Collections.sort(passengerPos, (o1, o2) -> o1[0] - o2[0]);
         
-        int start = routes.get(0).end, end = routes.get(0).start;
-        long answer = 0;
-
-        for(Route route : routes.subList(1, routes.size())){
-            int s = route.end, e = route.start;
-
-            if(s <= end){
-                end = Math.max(end, e);
-            }else{
-                answer += 2 * (end - start);
-                start = s;
-                end = e;
-            }
+        int start = 0, end = 0;
+        if(!passengerPos.isEmpty()){
+            start = passengerPos.get(0)[0];
+            end = passengerPos.get(0)[1];
         }
 
-        answer += 2 * (end - start);
-        System.out.println(answer + m);
+        long answer= 0;
+
+        for(int i=1 ; i<passengerPos.size() ; i++){
+            if(end < passengerPos.get(i)[0]){
+                answer += (end - start) * 2;
+
+                start = passengerPos.get(i)[0];
+                end = passengerPos.get(i)[1];
+            }
+
+            end = Math.max(end, passengerPos.get(i)[1]);
+        }
+
+        answer += (end - start) * 2;
+
+        bw.write(String.valueOf(answer + m));
+        bw.close();
+        br.close();
     }
 }
