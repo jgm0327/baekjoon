@@ -54,9 +54,6 @@ class Main {
             moveShark();
         }
 
-
-        // print(sharks);
-
         bw.write(String.valueOf(answer));
         bw.close();
         br.close();
@@ -69,17 +66,6 @@ class Main {
                 sharks[r][c].z = 0;
                 break;
             }
-        }
-    }
-
-    private static void print(Shark[][] sharks){
-        System.out.println();
-
-        for(int i=1 ; i<=R ; i++){
-            for(int j=1 ; j<=C ; j++){
-                System.out.print(sharks[i][j].z + " ");
-            }
-            System.out.println();
         }
     }
 
@@ -98,8 +84,6 @@ class Main {
 
                 if(shark.z == 0)
                     continue;
-
-                // print(temp);
 
                 int[] nextPos = calculatePos(r, c, shark.d, shark.s);
 
