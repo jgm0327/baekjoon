@@ -29,13 +29,17 @@ class Main {
     private static int bfs(){
         int ret = Integer.MAX_VALUE;
 
+        int[][] dp = new int[n][n];
+
+        for(int i=0 ; i<n ; i++){
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
+        }
+
         boolean[][][] visit = new boolean[n][n][n*n];
         Queue<int[]> que = new ArrayDeque<>();
         que.add(new int[]{0,0,0});
         
-        for(int i=0 ; i<n*n ; i++){
-            visit[0][0][i] = true;
-        }
+        dp[0][0] = 0;
 
         int[] dy = {0,0,1,-1}, dx = {1,-1,0,0};
 
@@ -61,12 +65,12 @@ class Main {
                 if(nextCount >= n * n)
                     continue;
 
-                if(visit[ny][nx][nextCount])
+                if(dp[ny][nx] <= nextCount)
                     continue;
 
 
                 que.add(new int[]{ny, nx, nextCount});
-                visit[ny][nx][nextCount] = true;
+                dp[ny][nx] = nextCount;
             }
         }
 
