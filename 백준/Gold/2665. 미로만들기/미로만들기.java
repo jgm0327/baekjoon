@@ -35,7 +35,6 @@ class Main {
             Arrays.fill(dp[i], Integer.MAX_VALUE);
         }
 
-        boolean[][][] visit = new boolean[n][n][n*n];
         Queue<int[]> que = new ArrayDeque<>();
         que.add(new int[]{0,0,0});
         
@@ -61,13 +60,9 @@ class Main {
 
                 if(board[ny][nx] == 0)
                     nextCount++;
-                    
-                if(nextCount >= n * n)
-                    continue;
 
                 if(dp[ny][nx] <= nextCount)
                     continue;
-
 
                 que.add(new int[]{ny, nx, nextCount});
                 dp[ny][nx] = nextCount;
