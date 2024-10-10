@@ -1,40 +1,40 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-class Main{
-
-    public static void main(String[] args) throws IOException{
+class Main {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int t = Integer.parseInt(br.readLine());
+        int T = Integer.parseInt(br.readLine());
 
         StringBuilder answer = new StringBuilder();
-        while(t-- > 0){
+
+        while (T-- > 0) {
             int n = Integer.parseInt(br.readLine());
-            int[][] dp = new int[2][n + 1];
-            int[][] stickers = new int[2][n + 1];
+            int[][] stickers = new int[2][n + 2];
 
-            for(int i=0 ; i<2 ; i++){
-                StringTokenizer stk = new StringTokenizer(br.readLine());
+            int[][] dp = new int[2][n + 2];
 
-                for(int j=1 ; j<=n ; j++){
-                    stickers[i][j] = Integer.parseInt(stk.nextToken());
-                }
+            for (int i = 0; i < 2; i++) {
+                StringTokenizer tokenizer = new StringTokenizer(br.readLine());
+
+                for (int j = 1; j <= n; j++)
+                    stickers[i][j] = Integer.parseInt(tokenizer.nextToken());
             }
 
             dp[0][1] = stickers[0][1];
             dp[1][1] = stickers[1][1];
-
-            for(int i=2 ; i<=n ; i++){
-                dp[0][i] = Math.max(dp[0][i - 1], Math.max(dp[0][i - 2], dp[1][i - 1]) + stickers[0][i]);
-                dp[1][i] = Math.max(dp[1][i - 1], Math.max(dp[1][i - 2], dp[0][i - 1]) + stickers[1][i]);
+            for (int i = 2; i <= n; i++) {
+                dp[0][i] = Math.max(Math.max(dp[0][i - 2], dp[1][i - 1]) + stickers[0][i], dp[0][i - 1]);
+                dp[1][i] = Math.max(Math.max(dp[1][i - 2], dp[0][i - 1]) + stickers[1][i], dp[1][i - 1]);
             }
-            answer.append(Math.max(dp[0][n], dp[1][n])).append("\n");
-        }   
 
-        System.out.print(answer);
+            answer.append(Math.max(dp[1][n], dp[0][n])).append("\n");
+        }
+
+        bw.write(answer.toString());
+        bw.close();
+        br.close();
     }
-
 }
