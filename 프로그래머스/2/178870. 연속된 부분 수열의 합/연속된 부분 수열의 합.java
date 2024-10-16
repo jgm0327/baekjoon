@@ -1,29 +1,40 @@
 class Solution {
     public int[] solution(int[] sequence, int k) {
+        if(sequence[0] == k)
+            return new int[]{0,0};
+        int[] answer = {0,0};
         int n = sequence.length;
-        int[] answer = {0, n};
-        int left = 0, right = 0, total = 0;
         
-        while(left <= right && left < n){
-            if(right < n && total + sequence[right] <= k){
+        int left = 0, right = 1, len = Integer.MAX_VALUE;
+        int total = sequence[0];
+        
+        while(right < n){
+            if(right < n && sequence[right] + total <= k){
                 total += sequence[right];
-                check(answer, right, left, k, total);
+                
+                if(total == k && len > right - left){
+                    answer[0] = left;
+                    answer[1] = right;
+                    len = right - left;
+                }
+                
                 right++;
             }
-            else {
-                total -= sequence[left];
-                check(answer, right, left, k, total);
-                left++;
+            else{
+                total -= sequence[left++];
+                
+                if(total == k && len > right - left){
+                    answer[0] = left;
+                    answer[1] = right;
+                    len = right - left;
+                }
             }
+            
+            
+            
+            
         }
-        return answer;
-    }
-    
-    private void check(int[] answer, int right, int left, int k, int total){
-        if(total != k || right - left >= answer[1] - answer[0])
-            return;
         
-        answer[0] = left;
-        answer[1] = right;
+        return answer;
     }
 }
