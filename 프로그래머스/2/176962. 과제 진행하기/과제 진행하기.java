@@ -1,71 +1,58 @@
 import java.util.*;
 
 class Solution {
-    class Assignment implements Comparable<Assignment>{
+    class Subject implements Comparable<Subject>{
         String name;
-        int startTime;
-        int duration;
+        int start, duration;
         
-        public Assignment(String name, String startTime, String duration){
+        public Subject(String name, String time, int duration){
             this.name = name;
-            this.startTime = calculateTime(startTime);
-            this.duration = Integer.parseInt(duration);
+            this.start = convertToInt(time);
+            this.duration = duration;
         }
         
-        private int calculateTime(String startTime){
-            String[] split = startTime.split(":");
-            int hour = Integer.parseInt(split[0]);
-            int minute = Integer.parseInt(split[1]);
+        private int convertToInt(String time){
+            String[] split = time.split(":");
             
-            return hour * 60 + minute;
+            return 60 * Integer.parseInt(split[0]) + Integer.parseInt(split[1]);
         }
         
         @Override
-        public int compareTo(Assignment o){
-            return this.startTime - o.startTime;
+        public int compareTo(Subject o){
+            return this.start - o.start;
         }
         
         @Override
         public String toString(){
-            return this.name + " " + this.startTime + " " + this.duration;
+            return this.name + " " + this.duration;
         }
     }
-    
     public String[] solution(String[][] plans) {
         String[] answer = new String[plans.length];
         
-        List<Assignment> assignments = new ArrayList<>();
+        List<Subject> subjects = new ArrayList<>();
         for(String[] plan : plans){
-            assignments.add(new Assignment(plan[0], plan[1], plan[2]));
+            subjects.add(new Subject(plan[0], plan[1], Integer.parseInt(plan[2])));
         }
         
-        Collections.sort(assignments);
-        ArrayDeque<Assignment> stack = new ArrayDeque<>();
-        
-        int prev = 0;
-        int idx = 0;
-        
-        for(Assignment assignment : assignments){
-            int startTime = assignment.startTime, duration = assignment.duration;
-            String name = assignment.name;
-            
-            while(!stack.isEmpty()
-                  && prev + stack.peekLast().duration <= startTime){
-                prev += stack.peekLast().duration;
-                answer[idx++] = stack.pollLast().name;
+        Collections.sort(subjects);
+        ArrayDeque<Subject> pause = new ArrayDeque<>();
+        int cur = 0, idx = 0;
+        for(int i=0 ; i<subjects.size() ; i++){
+            while(!pause.isEmpty() && cur + pause.peekLast().duration <= subjects.get(i).start){
+                cur += pause.peekLast().duration;
+                answer[idx++] = pause.pollLast().name;
             }
             
-            if(!stack.isEmpty()){
-                stack.peekLast().duration = 
-                    prev + stack.peekLast().duration - startTime;
+            if(!pause.isEmpty()){
+                pause.peekLast().duration -= (subjects.get(i).start - cur);
             }
-            
-            prev = startTime;
-            stack.add(assignment);
+            cur = subjects.get(i).start;
+            pause.add(subjects.get(i));
         }
         
-        while(!stack.isEmpty()){
-            answer[idx++] = stack.pollLast().name;
+        while(!pause.isEmpty()){
+            answer[idx++] = pause.pollLast().name;
         }
         
         return answer;
