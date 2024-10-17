@@ -20,8 +20,9 @@ class Solution {
                 
                 if(canRide(o1, o2)){
                     answer += ori.get(o1) * ori.get(o2);
-                    visit[o1][o2] = visit[o2][o1] = true;
                 }
+                
+                visit[o1][o2] = visit[o2][o1] = true;
             }
         }
         
