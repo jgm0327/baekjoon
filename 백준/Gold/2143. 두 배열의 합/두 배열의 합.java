@@ -5,46 +5,56 @@ class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
-        int T = Integer.parseInt(br.readLine());
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        int t = Integer.parseInt(br.readLine());
 
         int n = Integer.parseInt(br.readLine());
-        int[] prefix1 = new int[n + 1];
+
+        int[] prefixA = new int[n + 1];
 
         StringTokenizer tokenizer = new StringTokenizer(br.readLine());
-        Map<Integer, Integer> sum1 = new HashMap<>();
-        for(int i=1 ; i<=n ; i++){
-            prefix1[i] = prefix1[i - 1] + Integer.parseInt(tokenizer.nextToken());
+        Map<Integer, Integer> ACount = new HashMap<>();
+        for(int i=0 ; i<n ; i++){
+            prefixA[i + 1] += prefixA[i] + Integer.parseInt(tokenizer.nextToken());
         }
 
-        for(int i=1 ; i<=n ; i++){
-            for(int j=0 ; j<i ; j++){
-                int diff = prefix1[i] - prefix1[j];
-                sum1.put(diff, sum1.getOrDefault(diff, 0) + 1);
+        for(int i=0 ; i<=n ; i++){
+            for(int j=i+1 ; j<=n ; j++){
+                int key = prefixA[j] - prefixA[i];
+                ACount.put(key, ACount.getOrDefault(key,0) + 1);
             }
         }
 
         int m = Integer.parseInt(br.readLine());
-        int[] prefix2 = new int[m + 1];
+
+        int[] prefixB = new int[m + 1];
+        Map<Integer, Integer> BCount = new HashMap<>();
 
         tokenizer = new StringTokenizer(br.readLine());
-        for(int i=1 ; i<=m ; i++){
-            prefix2[i] = prefix2[i - 1] + Integer.parseInt(tokenizer.nextToken());
+        for(int i=0 ; i<m ; i++){
+            prefixB[i + 1] =  prefixB[i] + Integer.parseInt(tokenizer.nextToken());
         }
 
-        long answer = 0;
-        for(int i=1 ; i<=m ; i++){
-            for(int j=0 ; j<i ; j++){
-                int diff = prefix2[i] - prefix2[j];
-                if(!sum1.containsKey(T - diff))continue;
-
-                answer += sum1.get(T-diff);
+        for(int i=0 ; i<=m ; i++){
+            for(int j=i+1 ; j<=m ; j++){
+                int key = prefixB[j] - prefixB[i];
+                BCount.put(key, BCount.getOrDefault(key,0) + 1);
             }
         }
 
-        System.out.println(answer);
+        long answer = 0;
 
+        for(int A : ACount.keySet()){
+            int B = t - A;
+            if(!BCount.containsKey(B))
+                continue;
+
+            answer += (long)ACount.get(A) * (long)BCount.get(B);
+        }
+
+        bw.write(String.valueOf(answer));
+        bw.close();
         br.close();
     }
-
 }
