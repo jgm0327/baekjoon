@@ -1,39 +1,41 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;;
 
-class Main{    
-
-    /*
-     * 1 => 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-     * 5 => 1 2 3 4 1 2 3 4 5 2
-     */
-
-    public static void main(String[] args) throws IOException{
+class Main {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] input = br.readLine().split(" ");
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int n, m;
-        n = Integer.parseInt(input[0]);
-        m = Integer.parseInt(input[1]);
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
 
-        int[] coins = new int[n + 1];
+        int n = Integer.parseInt(tokenizer.nextToken());
+        int k = Integer.parseInt(tokenizer.nextToken());
 
-        for(int i=1 ; i<=n ; i++){
+        int[] coins = new int[n];
+        int[] dp = new int[k + 1];
+
+        Arrays.fill(dp, 1_000_001);
+
+        for (int i = 0; i < n; i++) {
             coins[i] = Integer.parseInt(br.readLine());
+            if (coins[i] <= k)
+                dp[coins[i]] = 1;
         }
 
-        int[] dp = new int[m + 1];
-        Arrays.fill(dp, 10001);
-        dp[0] = 0;
+        for (int coin : coins) {
+            for (int i = 1; i <= k; i++) {
+                if (coin > i || dp[i - coin] == 0) {
+                    continue;
+                }
 
-        for(int i=1 ; i<=n ; i++){
-            for(int coin = coins[i] ; coin <= m ;coin++){
-                dp[coin] = Math.min(dp[coin - coins[i]] + 1, dp[coin]);
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
             }
         }
+        if(dp[k] == 1000_001)
+            dp[k] = -1;
 
-        System.out.println(dp[m] == 10001 ? -1 : dp[m]);
+        bw.write(String.valueOf(dp[k]));
+        bw.close();
+        br.close();
     }
 }
