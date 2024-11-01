@@ -15,15 +15,15 @@ class Main {
             if(n == 0 && m == 0)
                 break;
 
-            Map<Integer, Boolean> exist = new HashMap<>();
+            int[] exist = new int[n];
 
             for(int i=0 ; i<n ; i++){
-                exist.put(Integer.parseInt(br.readLine()), true);
+                exist[i] = Integer.parseInt(br.readLine());
             }
 
             int count = 0;
             for(int i=0 ; i<m ; i++){
-                if(!exist.containsKey(Integer.parseInt(br.readLine())))
+                if(!binarySearch(Integer.parseInt(br.readLine()), exist))
                     continue;
 
                 count++;
@@ -35,5 +35,23 @@ class Main {
         bw.write(answer.toString());
         bw.close();
         br.close();
+    }
+
+    private static boolean binarySearch(int target, int[] exist){
+        int left = 0, right = exist.length - 1;
+
+        while(left <= right){
+            int mid = (left + right) / 2;
+
+            if(exist[mid] == target)
+                return true;
+            
+            if(exist[mid] < target)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
+
+        return false;
     }
 }
