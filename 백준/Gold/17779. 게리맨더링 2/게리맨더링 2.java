@@ -44,80 +44,51 @@ class Main {
         int minValue = Integer.MAX_VALUE, maxValue = Integer.MIN_VALUE;
         boolean[][] walls = setWall(board, y, x, d1, d2, n);
 
-        int sum = 0;
-        for(int i=0 ; i<y+d1 ; i++){
-            for(int j=0 ; j<=x ; j++){
-                if(walls[i][j])
-                    break;
+        for(int num=1 ; num<=4 ; num++){
+            int sum = sumOfSection(num, board, y, x, d1, d2, walls);
 
-                sum += board[i][j];
-            }
+            if(sum == 0)
+                return Integer.MAX_VALUE;
+
+            total -= sum;
+            maxValue = Math.max(maxValue, sum);
+            minValue = Math.min(minValue, sum);   
         }
 
-        if(sum == 0)
-            return Integer.MAX_VALUE;
-
-        total -= sum;
-        maxValue = Math.max(maxValue, sum);
-        minValue = Math.min(minValue, sum);
-
-        sum = 0;
-        for(int i=0 ; i<=y+d2 ; i++){
-            for(int j=n-1 ; j>x ; j--){
-                if(walls[i][j])
-                    break;
-
-                sum += board[i][j];
-            }
-        }
-        
-        if(sum == 0)
-            return Integer.MAX_VALUE;
-            
-        total -= sum;
-        maxValue = Math.max(maxValue, sum);
-        minValue = Math.min(minValue, sum);
-
-        sum = 0;
-        for(int i=y+d1 ; i<n ; i++){
-            for(int j=0 ; j<x-d1+d2 ; j++){
-                if(walls[i][j])
-                    break;
-
-                sum += board[i][j];
-            }
-        }
-        
-        if(sum == 0)
-            return Integer.MAX_VALUE;
-            
-        total -= sum;
-        maxValue = Math.max(maxValue, sum);
-        minValue = Math.min(minValue, sum);
-
-        sum = 0;
-        for(int i=y+d2+1 ; i<n ; i++){
-            for(int j=n-1 ; j>=x-d1+d2 ; j--){
-                if(walls[i][j])
-                    break;
-                sum += board[i][j];
-            }
-        }
-        
-        if(sum == 0)
-            return Integer.MAX_VALUE;
-            
-        total -= sum;
-        maxValue = Math.max(maxValue, sum);
-        minValue = Math.min(minValue, sum);
-
-        // System.out.println(total);
         maxValue = Math.max(maxValue, total);
         minValue = Math.min(minValue, total);
-        // System.out.println("ret: " + (maxValue - minValue));
-        // System.out.println();
 
         return maxValue - minValue;
+    }
+
+    private static int sumOfSection(int num, int[][] board, int y, int x, int d1, int d2, boolean[][] walls){
+        int n = board.length;
+        int[][] dir = {{}, {0, 0, y+d1, x+1}, {0, n-1, y+d2+1, x}, {y+d1, 0, n, x-d1+d2}, {y+d2+1, n - 1, n, x-d1+d2-1}};
+        int sum = 0;
+
+        int[] d = dir[num];
+        if(num % 2 == 1){
+            for(int i=d[0] ; i<d[2] ; i++){
+                for(int j=d[1] ; j<d[3] ; j++){
+                    if(walls[i][j])
+                        break;
+
+                    sum += board[i][j];
+                }
+            }
+        }
+        else{
+            for(int i=d[0] ; i<d[2] ; i++){
+                for(int j=d[1] ; j>d[3] ; j--){
+                    if(walls[i][j])
+                        break;
+
+                    sum += board[i][j];
+                }
+            }
+        }
+
+        return sum;
     }
 
     private static boolean[][] setWall(int[][] board, int y, int x, int d1, int d2, int n){
