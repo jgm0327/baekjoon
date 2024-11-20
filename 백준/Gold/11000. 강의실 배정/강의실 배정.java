@@ -6,8 +6,6 @@ class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        List<Integer> rooms = new ArrayList<>();
-
         int n = Integer.parseInt(br.readLine());
         int[][] times = new int[n][2];
 
