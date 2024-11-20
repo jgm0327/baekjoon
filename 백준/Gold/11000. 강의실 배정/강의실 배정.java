@@ -1,49 +1,44 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.io.*;
+import java.util.*;
 
-public class Main {
-	private static int n;
-	private static Lecture[] lectures;
-	
-	static class Lecture implements Comparable<Lecture>{
-		int start, end;
-		public Lecture(int start, int end) {
-			this.start = start;
-			this.end = end;
-		}
-		@Override
-		public int compareTo(Lecture o) {
-			return this.start - o.start;
-		}
-	}
-	
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		n = Integer.parseInt(br.readLine());
-		lectures = new Lecture[n];
-		for(int i=0 ; i<n ; i++) {
-			String[] str = br.readLine().split(" ");
-			int start = Integer.parseInt(str[0]), end = Integer.parseInt(str[1]);
-			lectures[i] = new Lecture(start, end);
-		}
-		System.out.println(solution());
-		br.close();
-	}
-	
-	private static int solution() {
-		Queue<Integer> pq = new PriorityQueue<>();
-		Arrays.sort(lectures);
-		pq.add(lectures[0].end);
-		for(int i=1; i<n ; i++) {
-			if(pq.peek() <= lectures[i].start) {
-				pq.poll();
-			}
-			pq.add(lectures[i].end);
-		}
-		return pq.size();
-	}
+class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        List<Integer> rooms = new ArrayList<>();
+
+        int n = Integer.parseInt(br.readLine());
+        int[][] times = new int[n][2];
+
+        for(int i=0 ; i<n ; i++){
+            StringTokenizer tokenizer = new StringTokenizer(br.readLine());
+            
+            int start = Integer.parseInt(tokenizer.nextToken());
+            int end = Integer.parseInt(tokenizer.nextToken());
+
+            times[i] = new int[]{start, end};
+        }
+
+        Arrays.sort(times, (o1, o2) -> {
+            if(o1[0] != o2[0])
+                return o1[0] - o2[0];
+
+            return o1[1] - o2[1];
+        });
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for(int[] time : times){
+            int start = time[0], end = time[1];
+
+            if(!pq.isEmpty() && pq.peek() <= start)
+                pq.poll();
+
+            pq.add(end);
+        }
+
+        bw.write(String.valueOf(pq.size()));
+        bw.close();
+        br.close();
+    }
 }
