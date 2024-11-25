@@ -18,30 +18,31 @@ class Main {
             points[i] = Integer.parseInt(tokenizer.nextToken());
         }
 
-        StringBuilder answer = new StringBuilder();
+        String answer = "";
 
         int left = 0, right = n;
         while(left <= right){
             int mid = (left + right) / 2;
 
             int total = 1, prev = points[0], cnt = 1;
-            StringBuilder comp = new StringBuilder("1");
+            long temp = 1;
             for(int i=1 ; i<k ; i++){
-                char c = '0';
+                int c = 0;
                 if(mid < points[i] - prev){
                     total++;
                     prev = points[i];
                     cnt++;
                     
                     if(cnt <= m)
-                        c = '1';
+                        c = 1;
                 }
-                comp.append(c);
+
+                temp = ((temp << 1) | c);
             }
 
             if(total >= m){
                 left = mid + 1;
-                answer = comp;
+                answer = Long.toBinaryString(temp);
             }
             else
                 right = mid - 1;
