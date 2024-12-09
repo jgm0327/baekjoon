@@ -13,7 +13,7 @@ class Main {
         int m = Integer.parseInt(tokenizer.nextToken());
         int k = Integer.parseInt(tokenizer.nextToken());
 
-        List<long[]>[] graph = new ArrayList[n + 1];
+        List<int[]>[] graph = new ArrayList[n + 1];
         for(int i=0 ; i<=n ; i++)
             graph[i] = new ArrayList<>();
 
@@ -21,10 +21,10 @@ class Main {
             tokenizer = new StringTokenizer(br.readLine());
 
             int sour = Integer.parseInt(tokenizer.nextToken());
-            long des = Integer.parseInt(tokenizer.nextToken());
-            long dist = Integer.parseInt(tokenizer.nextToken());
+            int des = Integer.parseInt(tokenizer.nextToken());
+            int dist = Integer.parseInt(tokenizer.nextToken());
 
-            graph[sour].add(new long[]{des, dist});
+            graph[sour].add(new int[]{des, dist});
         }
 
         bw.write(dijkstra(graph, n, k));
@@ -32,14 +32,14 @@ class Main {
         br.close();
     }
 
-    private static String dijkstra(final List<long[]>[] graph, int n, int k){
-        PriorityQueue<Long>[] orderCounts = new PriorityQueue[n + 1];
+    private static String dijkstra(final List<int[]>[] graph, int n, int k){
+        PriorityQueue<Integer>[] orderCounts = new PriorityQueue[n + 1];
         for(int i=0 ; i<=n ; i++){
             orderCounts[i] = new PriorityQueue<>(Collections.reverseOrder());
         }
-        orderCounts[1].add(0L);
+        orderCounts[1].add(0);
 
-        PriorityQueue<long[]> pq = new PriorityQueue<>((o1, o2) -> {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> {
             if(o1[1] > o2[1])
                 return 1;
             else if(o1[1] < o2[1])
@@ -47,18 +47,14 @@ class Main {
             return 0;
         });
 
-        pq.add(new long[]{1, 0});
-
-        long[] costs = new long[n + 1];
-        Arrays.fill(costs, Integer.MAX_VALUE);
-        costs[1] = 0;
+        pq.add(new int[]{1, 0});
 
         while(!pq.isEmpty()){
-            long[] cur = pq.poll();
+            int[] cur = pq.poll();
 
-            long sour = cur[0], dist = cur[1];
-            for(long[] des : graph[(int)sour]){
-                long nextDist = dist + des[1];
+            int sour = cur[0], dist = cur[1];
+            for(int[] des : graph[(int)sour]){
+                int nextDist = dist + des[1];
                 int point = (int)des[0];
 
                 if(orderCounts[point].size() == k 
@@ -68,9 +64,8 @@ class Main {
                 if(orderCounts[point].size() == k)
                     orderCounts[point].poll();
 
-                costs[point] = nextDist;
                 orderCounts[point].add(nextDist);
-                pq.add(new long[]{point, nextDist});
+                pq.add(new int[]{point, nextDist});
             }
         }
 
