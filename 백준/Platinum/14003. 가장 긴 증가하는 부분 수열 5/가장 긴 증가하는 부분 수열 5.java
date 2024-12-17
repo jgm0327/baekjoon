@@ -5,64 +5,58 @@ class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        
-        
+
         int n = Integer.parseInt(br.readLine());
-        
         StringTokenizer tokenizer = new StringTokenizer(br.readLine());
-        
-        int[] numbers = new int[n];
-        int[] indices = new int[n];
+        int[] indexOfNumber = new int[n];
+
         List<Integer> list = new ArrayList<>();
 
+        int[] numbers = new int[n];
         for(int i=0 ; i<n ; i++){
             numbers[i] = Integer.parseInt(tokenizer.nextToken());
-        }
-
-        list.add(Integer.MIN_VALUE);
-
-        for(int i=0 ; i<n ; i++){
-            if(numbers[i] > list.get(list.size() - 1)){
+            
+            if(list.isEmpty() || list.get(list.size() - 1) < numbers[i]){
                 list.add(numbers[i]);
-                indices[i] = list.size() - 1;
+                indexOfNumber[i] = list.size() - 1;
                 continue;
             }
 
             int idx = bisectLeft(list, numbers[i]);
-            indices[i] = idx;
             list.set(idx, numbers[i]);
+            indexOfNumber[i] = idx;
         }
+        
+        StringBuilder answer = new StringBuilder();
+        answer.append(list.size()).append('\n');
 
+        int[] temp = new int[list.size()];
         int idx = list.size() - 1;
-        ArrayDeque<Integer> answer = new ArrayDeque<>();
 
         for(int i=n-1 ; i>=0 ; i--){
-            if(indices[i] == idx){
-                idx--;
-                answer.add(numbers[i]);
-            }
+            if(idx == indexOfNumber[i])
+                temp[idx--] = numbers[i];
         }
 
-        bw.append(String.valueOf(answer.size())).append("\n");
-
-        while(!answer.isEmpty()){
-            bw.append(String.valueOf(answer.pollLast())).append(" ");
+        for(int i=0 ; i<temp.length ; i++){
+            answer.append(temp[i]).append(" ");
         }
 
-        bw.flush();
-
+        bw.write(answer.toString());
         bw.close();
         br.close();
     }
 
-    private static int bisectLeft(List<Integer> number, int target){
-        int left = 0, right = number.size() - 1;
+    private static int bisectLeft(List<Integer> list, int target){
+        int left = 0, right = list.size() - 1;
 
         while(left <= right){
             int mid = (left + right) / 2;
 
-            if(number.get(mid) >= target)right = mid - 1;
-            else left = mid + 1;
+            if(target <= list.get(mid))
+                right = mid - 1;
+            else
+                left = mid + 1;
         }
 
         return left;
