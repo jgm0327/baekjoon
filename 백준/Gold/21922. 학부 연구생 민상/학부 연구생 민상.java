@@ -59,86 +59,51 @@ class Main {
         Queue<int[]> que = new ArrayDeque<>();
         
         for(int i=0 ; i<4 ; i++){
-            int ny = start[0] + dy[i], nx = start[1] + dx[i];
-            
-            if(!isIn(ny, nx) || visit[ny][nx][i])
-                continue;
-
-            visit[ny][nx][i] = true;
-            available[ny][nx] = true;
-            if(laboratory[ny][nx] == 0){
-                que.add(new int[]{ny, nx, i});
-                continue;
-            }
-
-            int curveY = ny, curveX = nx;
-            int nextDir = curveDir[laboratory[ny][nx]][i];
-
-            boolean cantAdd = false;
-            while(laboratory[curveY][curveX] != 0){
-                curveY += dy[nextDir];
-                curveX += dx[nextDir];
-
-                if(!isIn(curveY, curveX) || visit[curveY][curveX][nextDir]){
-                    cantAdd = true;
-                    break;
-                }
-
-                available[curveY][curveX] = true;
-                visit[curveY][curveX][nextDir] = true;
-                nextDir = curveDir[laboratory[curveY][curveX]][nextDir];
-            }
-
-            if(cantAdd)
-                continue;
-
-            que.add(new int[]{curveY, curveX, nextDir});
+            addQueue(start[0], start[1], i, que, available);
         }
-
-        // 1 좌 -> 우, 우 -> 좌, 상 -> 상, 하 -> 하
-        // 2 좌 -> 좌, 우 -> 우, 상 -> 하, 하 -> 상
-        // 3 좌 -> 하, 우 -> 상, 상 -> 좌, 하 -> 우
-        // 4 좌 -> 상, 우 -> 하, 상 -> 우, 하 -> 좌
 
         while(!que.isEmpty()){
             int[] cur = que.poll();
 
             int y = cur[0], x = cur[1], dir = cur[2];
-
-            int ny = y + dy[dir], nx = x + dx[dir];
-            if(!isIn(ny, nx) || visit[ny][nx][dir])
-                continue;
-
-            visit[ny][nx][dir] = true;
-            available[ny][nx] = true;
-            if(laboratory[ny][nx] == 0){
-                que.add(new int[]{ny, nx, dir});
-                continue;
-            }
-
-            int curveY = ny, curveX = nx;
-            int nextDir = curveDir[laboratory[ny][nx]][dir];
-
-            boolean cantAdd = false;
-            while(laboratory[curveY][curveX] != 0){
-                curveY = curveY + dy[nextDir];
-                curveX = curveX + dx[nextDir];
-
-                if(!isIn(curveY, curveX) || visit[curveY][curveX][nextDir]){
-                    cantAdd = true;
-                    break;
-                }
-
-                available[curveY][curveX] = true;
-                visit[curveY][curveX][nextDir] = true;
-                nextDir = curveDir[laboratory[curveY][curveX]][nextDir];
-            }
-
-            if(cantAdd)
-                continue;
-                
-            que.add(new int[]{curveY, curveX, nextDir});
+            addQueue(y, x, dir, que, available);
         }
+    }
+
+    private static void addQueue(int y, int x, int dir, Queue<int[]> que, boolean[][] available){
+        int ny = y + dy[dir], nx = x + dx[dir];
+        if(!isIn(ny, nx) || visit[ny][nx][dir])
+            return;
+
+        visit[ny][nx][dir] = true;
+        available[ny][nx] = true;
+        if(laboratory[ny][nx] == 0){
+            que.add(new int[]{ny, nx, dir});
+            return;
+        }
+
+        int curveY = ny, curveX = nx;
+        int nextDir = curveDir[laboratory[ny][nx]][dir];
+
+        boolean cantAdd = false;
+        while(laboratory[curveY][curveX] != 0){
+            curveY = curveY + dy[nextDir];
+            curveX = curveX + dx[nextDir];
+
+            if(!isIn(curveY, curveX) || visit[curveY][curveX][nextDir]){
+                cantAdd = true;
+                break;
+            }
+
+            available[curveY][curveX] = true;
+            visit[curveY][curveX][nextDir] = true;
+            nextDir = curveDir[laboratory[curveY][curveX]][nextDir];
+        }
+
+        if(cantAdd)
+            return;
+            
+        que.add(new int[]{curveY, curveX, nextDir});
     }
 
     private static boolean isIn(int y, int x){
