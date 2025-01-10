@@ -1,51 +1,48 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-public class Main {
-	static int n, m;
-	static List<Integer> list;
-	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-	public static void main(String[] args) {
+class Main{
+    private static int n, m;
+    private static int[] numbers;
+    private static StringBuilder answer;
+
+	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try {
-			String[] arr = br.readLine().split(" ");
-			n = Integer.parseInt(arr[0]);
-			m = Integer.parseInt(arr[1]);
-			list = new ArrayList<>();
-			String[] str = br.readLine().split(" ");
-			for(String s : str) list.add(Integer.parseInt(s));
-			Collections.sort(list);
-			back(0, new LinkedList<Integer>());
-			br.close();
-			bw.close();
-		}catch(IOException e) {
-			
-		}
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(tokenizer.nextToken());
+        m = Integer.parseInt(tokenizer.nextToken());
+
+        tokenizer = new StringTokenizer(br.readLine());
+        numbers = new int[n];
+        for(int i=0 ; i<n ; i++)
+            numbers[i] = Integer.parseInt(tokenizer.nextToken());
+
+        Arrays.sort(numbers);
+        answer = new StringBuilder();
+        dfs(0, new ArrayDeque<>());
+        
+        bw.write(answer.toString());
+		bw.close();
+		br.close();
 	}
-	
-	private static void back(int depth, LinkedList<Integer> path) {
-		if(depth == m) {
-			try {
-				StringBuilder str = new StringBuilder();
-				for(int p : path) str.append(p + " ");
-				bw.write(str.toString() + "\n");
-			}catch(IOException e) {
-			}
-			return;
-		}
-		
-		for(int i=0 ; i<n ; i++) {
-			path.add(list.get(i));
-			back(depth+1, path);
-			path.pollLast();
-				
-		}
-	}
+
+    private static void dfs(int start, ArrayDeque<Integer> path){
+        if(path.size() == m){
+            for(int number : path){
+                answer.append(number).append(' ');
+            }
+            answer.append('\n');
+            return;
+        }
+
+        for(int i=0; i<n ; i++){
+
+            path.add(numbers[i]);
+            dfs(i + 1, path);
+            path.pollLast();
+        }
+    }
+
 }
