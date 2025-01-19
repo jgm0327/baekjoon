@@ -59,10 +59,10 @@ class Main{
             return;
         }
 
-        for(int i=0 ; i<3 ; i++){
+        for(int i=0 ; i<2 ; i++){
             for(int k=0 ; k<2*i + 1 ; k++){
                 int ny = y + (i * size / 2), nx = x + (k * size / 2);
-                if((i == 2 || k == 1) || !isIn(ny, nx))
+                if(k == 1 || !isIn(ny, nx))
                     continue;
 
                 triangle(ny, nx, size / 2);
