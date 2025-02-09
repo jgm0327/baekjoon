@@ -1,63 +1,55 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-	static int n, m;
-	static List<Integer> list;
-	static boolean[] visit;
-	static Map<String, Boolean> map;
-	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-	public static void main(String[] args) {
+	private static int n, m;
+	private static int[] arr;
+	private static StringBuilder answer;
+
+	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try {
-			String[] arr = br.readLine().split(" ");
-			n = Integer.parseInt(arr[0]);
-			m = Integer.parseInt(arr[1]);
-			list = new ArrayList<>();
-			visit = new boolean[n];
-			map = new HashMap<>();
-			String[] str = br.readLine().split(" ");
-			for(String s : str) list.add(Integer.parseInt(s));
-			Collections.sort(list);
-			back(0, new LinkedList<Integer>());
-			br.close();
-			bw.close();
-		}catch(IOException e) {
-			
+
+		StringTokenizer tokenizer = new StringTokenizer(br.readLine());
+		
+		n = Integer.parseInt(tokenizer.nextToken());
+		m = Integer.parseInt(tokenizer.nextToken());
+
+		tokenizer = new StringTokenizer(br.readLine());
+		arr = new int[n];
+		for(int i=0 ; i<n ; i++){
+			arr[i] = Integer.parseInt(tokenizer.nextToken());
 		}
+
+		Arrays.sort(arr);
+
+		answer = new StringBuilder();
+		dfs(0, new int[m], new boolean[n]);
+
+		System.out.print(answer);
+		br.close();
 	}
-	
-	private static void back(int depth, LinkedList<Integer> path) {
-		if(depth == m) {
-			try {
-				StringBuilder str = new StringBuilder();
-				for(int p : path) str.append(p + " ");
-				if(map.containsKey(str.toString()))return;
-				map.put(str.toString(), true);
-				bw.write(str.toString() + "\n");
-			}catch(IOException e) {
+
+	private static void dfs(int depth, int[] path, boolean[] visit){
+		if(depth == m){
+			for(int i=0 ; i<m ; i++){
+				answer.append(path[i]).append(" ");
 			}
+			answer.append("\n");
 			return;
 		}
-		
-		for(int i=0 ; i<n ; i++) {
-			if(!visit[i]) {
-				visit[i] = true;
-				path.add(list.get(i));
-				back(depth+1, path);
-				path.pollLast();
-				visit[i] = false;
-			}
-				
+
+		for(int i=0 ; i<n ; i++){
+			if(visit[i] || path[depth] == arr[i])
+				continue;
+
+			visit[i] = true;
+			path[depth] = arr[i];
+			dfs(depth + 1, path, visit);
+			visit[i] = false;
 		}
+		path[depth] = 0;
 	}
 }
