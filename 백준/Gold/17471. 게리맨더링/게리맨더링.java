@@ -1,127 +1,113 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 class Main {
-    private static Set<Integer>[] graph;
-    private static List<Map<Integer, Boolean>> cases;
-    private static int[] count;
-    private static boolean[] visit;
-    private static int n;
-    public static void main(String[] args) throws IOException {
+    private static int n, answer;
+    private static boolean[] v;
+    private static int[] population;
+    private static List<Integer>[] graph;
+
+    public static void main(String args[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         n = Integer.parseInt(br.readLine());
-
-        graph = new HashSet[n + 1];
-        for(int i=0 ; i<=n ; i++){
-            graph[i] = new HashSet<>();
-        }
+        population = new int[n + 1];
 
         StringTokenizer tokenizer = new StringTokenizer(br.readLine());
-
-        count = new int[n + 1];
-        for(int i=1 ; i<=n ; i++){
-            count[i] = Integer.parseInt(tokenizer.nextToken());
+        for (int i = 1; i <= n; i++) {
+            population[i] = Integer.parseInt(tokenizer.nextToken());
         }
 
-        for(int sour=1; sour<=n ; sour++){
+        graph = new ArrayList[n + 1];
+        for (int i = 0; i <= n; i++)
+            graph[i] = new ArrayList<>();
+
+        for (int i = 1; i <= n; i++) {
             tokenizer = new StringTokenizer(br.readLine());
 
-            tokenizer.nextToken();
-            while(tokenizer.hasMoreTokens()){
-                int des = Integer.parseInt(tokenizer.nextToken());
-                graph[sour].add(des);
-                graph[des].add(sour);
+            int m = Integer.parseInt(tokenizer.nextToken());
+
+            while (m-- > 0) {
+                graph[i].add(Integer.parseInt(tokenizer.nextToken()));
             }
         }
 
-        
-        cases = new ArrayList<>();
-        visit = new boolean[n + 1];
+        answer = Integer.MAX_VALUE;
 
-        for(int size = 1 ; size<n ; size++)
-            findAllCases(1, new boolean[n + 1], size);
-
-        int answer = Integer.MAX_VALUE;
-        for(Map<Integer, Boolean> team1 : cases){
-            boolean f1 = false, f2 = false;
-            int total1 = 0, total2 = 0;
-
-            for(int i=1 ; i<=n ; i++){
-                if(f1 && f2)
-                    break;
-
-                if(!f1 && team1.containsKey(i)){
-                    f1 = true;
-                    total1 = bfs(team1, true, i, team1.size());
-                }
-                else if(!f2 && !team1.containsKey(i)){
-                    f2 = true;
-                    total2 = bfs(team1, false, i, n - team1.size());
-                }
-            }
-            
-            if(total1 == Integer.MAX_VALUE || total2 == Integer.MAX_VALUE)
-                continue;
-
-            answer = Math.min(Math.abs(total1 - total2), answer);
-        }
-
-        if(answer == Integer.MAX_VALUE)
+        v = new boolean[n + 1];
+        dfs(1, 0, new boolean[n + 1]);
+        if (answer == Integer.MAX_VALUE)
             answer = -1;
 
-        bw.write(String.valueOf(answer));
-        bw.close();
+        System.out.println(answer);
+
         br.close();
     }
 
-    private static void findAllCases(int start, boolean[] t1, int size){
-        if(size == 0){
-            cases.add(new HashMap<>());
-            for(int i=1;i<=n ; i++){
-                if(t1[i]) cases.get(cases.size() - 1).put(i, true);
+    private static void dfs(int start, int depth, boolean[] visit) {
+        if (0 < depth && depth < n) {
+            Arrays.fill(v, false);
+            int cnt = 0, A = 0, B = 0;
+
+            for (int i = 1; i <= n; i++) {
+                if (v[i])
+                    continue;
+
+                if (visit[i])
+                    A = bfs(i, visit, v, visit[i]);
+                else
+                    B = bfs(i, visit, v, visit[i]);
+
+                cnt++;
+
+                if (cnt > 2)
+                    break;
             }
-            return;
+
+            if (cnt == 2) {
+                answer = Math.min(answer, Math.abs(A - B));
+            }
         }
 
-        for(int i=start ; i<=n ; i++){
-            if(visit[i])
+        for (int i = start; i <= n; i++) {
+            if (visit[i])
                 continue;
-            
+
             visit[i] = true;
-            t1[i] = true;
-            findAllCases(i + 1, t1, size - 1);
-            t1[i] = false;
+            dfs(i + 1, depth + 1, visit);
             visit[i] = false;
         }
     }
 
-    private static int bfs(Map<Integer, Boolean> team1, boolean isTeam1, int start, int size){
+    private static int bfs(int start, boolean[] A, boolean[] v, boolean cur) {
         Queue<Integer> que = new ArrayDeque<>();
         que.add(start);
 
-        boolean[] v = new boolean[n + 1];
-        v[start] = true;
+        int ret = 0;
+        boolean[] visit = new boolean[n + 1];
+        visit[start] = true;
 
-        int total = 0, cnt = 0;
-        while(!que.isEmpty()){
+        while (!que.isEmpty()) {
             int sour = que.poll();
-            cnt++;
-            total += count[sour];
 
-            for(int des : graph[sour]){
-                if(isTeam1 != team1.containsKey(des) || v[des])
+            v[sour] = true;
+            ret += population[sour];
+            for (int des : graph[sour]) {
+                if (visit[des] || A[des] != cur)
                     continue;
 
+                visit[des] = true;
                 que.add(des);
-                v[des] = true;
             }
         }
 
-        if(cnt != size)
-            return Integer.MAX_VALUE;
-
-        return total;
+        return ret;
     }
 }
