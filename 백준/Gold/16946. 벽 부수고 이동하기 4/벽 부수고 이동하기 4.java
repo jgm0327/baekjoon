@@ -1,92 +1,106 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.io.*;
+import java.util.*;
 
-class Main{
-  private static int n, m;
-  private static Map<Integer, Integer> count;
-  private static int[][] answer, board, save;
-  private static List<int[]> blanks;
-  private static boolean[][] visit;
-  private static final int[] dy = {0, 0, 1, -1}, dx = {1, -1, 0, 0};
-  public static void main(String[] args) throws IOException{
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    String[] size = br.readLine().split(" ");
-    n = Integer.parseInt(size[0]);
-    m = Integer.parseInt(size[1]);
+class Main {
+    static int n, m;
+    static int[] dy = { 0, 0, 1, -1 }, dx = { 1, -1, 0, 0 };
+    static int[] count;
+    static int[][] numbering;
+    static char[][] board;
 
-    answer = new int[n][m];
-    blanks = new ArrayList<>();
-    board = new int[n][m];
-    save = new int[n][m];
-    visit = new boolean[n][m];
-    count = new HashMap<>();
+    public static void main(String args[]) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    for(int i=0 ; i<n ; i++){
-      String values = br.readLine();
-      for(int j=0 ; j<m ; j++){
-        board[i][j] = (int)(values.charAt(j) - '0');
-        if(board[i][j] == 0)blanks.add(new int[]{i, j});
-        else answer[i][j]++;
-      }
+        String[] split = br.readLine().split(" ");
+
+        n = Integer.parseInt(split[0]);
+        m = Integer.parseInt(split[1]);
+
+        board = new char[n][m];
+        List<int[]> zeroPos = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            char[] input = br.readLine().toCharArray();
+            for (int j = 0; j < m; j++) {
+                board[i][j] = input[j];
+                if(board[i][j] == '0')
+                    zeroPos.add(new int[] { i, j });
+            }
+        }
+
+        boolean[][] visit = new boolean[n][m];
+        count = new int[zeroPos.size() + 1];
+
+        int number = 1;
+        numbering = new int[n][m];
+        for(int[] pos : zeroPos){
+            if(visit[pos[0]][pos[1]])
+                continue;
+
+            bfs(pos[0], pos[1], number++, visit);
+        }
+
+        StringBuilder answer = new StringBuilder();
+        for(int i=0 ; i<n ; i++){
+            for(int j=0 ; j<m ; j++){
+                if(board[i][j] == '0')
+                    answer.append("0");
+                else
+                    answer.append((1 + aroundSum(i, j, number + 1)) % 10);
+            }
+            answer.append("\n");
+        }
+
+        System.out.print(answer);
+        br.close();
     }
 
-    int cnt = 0;
-    for(int[] point : blanks){
-      int y = point[0], x = point[1];
-      if(visit[y][x])continue;
-      count.put(++cnt, bfs(y, x, cnt));
+    static int aroundSum(int y, int x, int size){
+        int total = 0;
+
+        boolean[] visit = new boolean[size];
+        for(int i=0 ; i<4 ; i++){
+            int ny = y + dy[i], nx = x + dx[i];
+
+            if(!isIn(ny, nx) || board[ny][nx] == '1' || visit[numbering[ny][nx]])
+                continue;
+
+            total += count[numbering[ny][nx]];
+            visit[numbering[ny][nx]] = true;
+        }
+
+        return total;
     }
 
-    StringBuilder sb = new StringBuilder();
-    for(int i=0 ; i<n ; i++){
-      for(int j=0 ; j<m ; j++){
-        if(board[i][j] == 0)sb.append("0");
-        else sb.append(count(i, j) % 10);
-      }
-      sb.append("\n");
+    static boolean isIn(int y, int x) {
+        return 0 <= y && y < n && 0 <= x && x < m;
     }
-    System.out.print(sb);
-    br.close();
-  }
 
-  private static int bfs(int sy, int sx, int num){
-    Queue<int[]> que = new LinkedList<>();
-    que.add(new int[]{sy, sx});
-    visit[sy][sx] = true;
-    int cnt = 0;
-    while(!que.isEmpty()){
-      int[] cur = que.poll();
-      int y = cur[0], x = cur[1];
-      save[y][x] = num;
-      cnt++;
-      for(int i=0 ; i<4 ; i++){
-        int ny = y + dy[i], nx = x + dx[i];
-        if(ny < 0 || ny >= n || nx < 0 || nx >= m || visit[ny][nx] || board[ny][nx] !=0)
-          continue;
-        que.add(new int[]{ny, nx});
-        visit[ny][nx] = true;
-      }
-    }
-    return cnt;
-  }
+    static void bfs(int startY, int startX, int number, boolean[][] visit) {
+        Queue<int[]> que = new ArrayDeque<>();
+        que.add(new int[] { startY, startX });
 
-  private static int count(int y, int x){
-    Map<Integer, Boolean> v = new HashMap<>();
-    int ret = 1;
-    for(int i=0 ; i<4 ; i++){
-      int ny = y + dy[i], nx = x + dx[i];
-        if(ny < 0 || ny >= n || nx < 0 || nx >= m || v.containsKey(save[ny][nx]) || !count.containsKey(save[ny][nx]))
-          continue;
-        ret += count.get(save[ny][nx]);
-        v.put(save[ny][nx], true);
+        visit[startY][startX] = true;
+
+        int ret = 0;
+        while(!que.isEmpty()){
+            int[] cur = que.poll();
+
+            int y = cur[0], x = cur[1];
+            numbering[y][x] = number;
+            ret++;
+
+            for(int i=0 ; i<4 ; i++){
+                int ny = y + dy[i], nx = x + dx[i];
+
+                if(!isIn(ny, nx) || board[ny][nx] == '1' || visit[ny][nx])
+                    continue;
+
+                visit[ny][nx] = true;
+                que.add(new int[]{ny, nx});
+            }
+        }
+
+        count[number] = ret;
     }
-    return ret;
-  }
-}            
+}
