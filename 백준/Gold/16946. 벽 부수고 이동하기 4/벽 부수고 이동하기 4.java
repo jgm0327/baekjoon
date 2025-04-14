@@ -58,15 +58,15 @@ class Main {
     static int aroundSum(int y, int x, int size){
         int total = 0;
 
-        boolean[] visit = new boolean[size];
+        Map<Integer, Boolean> visit = new HashMap<>();
         for(int i=0 ; i<4 ; i++){
             int ny = y + dy[i], nx = x + dx[i];
 
-            if(!isIn(ny, nx) || board[ny][nx] == '1' || visit[numbering[ny][nx]])
+            if(!isIn(ny, nx) || board[ny][nx] == '1' || visit.containsKey(numbering[ny][nx]))
                 continue;
 
             total += count[numbering[ny][nx]];
-            visit[numbering[ny][nx]] = true;
+            visit.put(numbering[ny][nx], true);
         }
 
         return total;
