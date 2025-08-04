@@ -37,7 +37,11 @@ class Main {
             }
         }
 
-        System.out.println(answer[0] + " " + answer[1] + " " + answer[2]);
+        StringBuilder aout = new StringBuilder();
+        for(int i=0 ;i<3 ; i++)
+            aout.append(answer[i]).append(" ");
+
+        System.out.println(aout);
         br.close();
     }
 }
