@@ -1,37 +1,42 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
-class Main{
-    private static int n;
-    private static int[] liquids;
-    public static void main(String[] args) throws IOException{
+class Main {
+
+    static int n;
+    static int[] arr;
+
+    public static void main(String args[]) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        liquids = new int[n];
-        
-        StringTokenizer stk = new StringTokenizer(br.readLine());
-        for(int i=0 ; i<n ; i++){
-            liquids[i] = Integer.parseInt(stk.nextToken());
-        }
 
-        Arrays.sort(liquids);
-        long min = Long.MAX_VALUE;
+        n = Integer.parseInt(br.readLine());
+
+        arr = new int[n];
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++)
+            arr[i] = Integer.parseInt(tokenizer.nextToken());
+
+        Arrays.sort(arr);
+
         int[] answer = new int[3];
-        for(int i=0 ; i<n ; i++){
-            int start = i + 1, end = n - 1;
-            while(start < end){
-                long data = (long)liquids[i] + (long)liquids[start] + (long)liquids[end];
-                if(min > Math.abs(data)){
-                    min = Math.abs(data);
-                    answer = new int[]{liquids[i], liquids[start], liquids[end]};
+        long minValue = Long.MAX_VALUE / 10;
+        for (int left = 0; left < n - 2; left++) {
+            int mid = left + 1, right = n - 1;
+
+            while (mid < right) {
+                long total = (long)arr[left] + (long)arr[mid] + (long)arr[right];
+
+                if (Math.abs(total) < minValue) {
+                    minValue = Math.abs(total);
+                    answer = new int[]{arr[left], arr[mid], arr[right]};
                 }
-                if(data < 0)start++;
-                else end--;
+
+                if(total < 0)
+                    mid++;
+                else right--;
             }
         }
+
         System.out.println(answer[0] + " " + answer[1] + " " + answer[2]);
         br.close();
     }
