@@ -1,50 +1,50 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
-class Main{
-    private static int n;
-    private static final int[] numbers = {1, 2, 3, 5, 7, 9};
-    private static StringBuilder answer;
+class Main {
+    static StringBuilder answer;
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        n = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine());
 
         answer = new StringBuilder();
-        dfs(0, 0);
+
+        dfs(n, new StringBuilder());
 
         System.out.print(answer);
+
+        br.close();
     }
 
-    private static boolean isPrime(int number){
-        while(number > 0){
-            if(number == 1)return false;
-
-            for(int i=2 ; i<=Math.sqrt(number) ; i++){
-                if(number % i == 0)
-                    return false;
-            }
-
-            number /= 10;
-        }
-        return true;
-    }
-
-    private static void dfs(int depth, int number){
-        if(depth == n){
-            answer.append(number).append("\n");
+    static void dfs(int depth, StringBuilder path) {
+        if (depth == 0) {
+            answer.append(path).append("\n");
             return;
         }
 
-        for(int num : numbers){
-            int temp = number * 10 + num;
-            if(!isPrime(temp))continue;
+        for (int i = 0; i < 9; i++) {
+            char number = (char)('1' + i);
 
-            dfs(depth + 1, temp);
+            path.append(number);
+            if(isPrime(Integer.parseInt(path.toString())))
+                dfs(depth - 1, path);
+
+            path.deleteCharAt(path.length() - 1);
         }
     }
 
+    static boolean isPrime(int number) {
+        if(number == 1)
+            return false;
+            
+        for(int i=2 ; i<=Math.sqrt(number) ; i++){
+            if(number % i == 0)
+                return false;
+        }
+
+        return true;
+    }
 }
