@@ -2,53 +2,57 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.StringTokenizer;
 
-class Main{
-	private static int n, m;
-	private static char[] words;
-	private static StringBuilder answer;
-	private static Map<Character, Boolean> vowels;
-	private static boolean[] visit;
+class Main {
+    
+    static int n, m;
+    static char[] arr, vowel = {'a', 'e', 'i', 'u', 'o'};
 
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer stk = new StringTokenizer(br.readLine());
-		n = Integer.parseInt(stk.nextToken());
-		m = Integer.parseInt(stk.nextToken());
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		words = new char[m];
-		visit = new boolean[m];
-		vowels = Map.of('a', true, 'e', true, 'i', true, 'o', true, 'u', true);
+        StringTokenizer tokenizer = new StringTokenizer(br.readLine());
 
-		String[] str = br.readLine().split(" ");
-		for(int i=0 ; i<m ; i++){
-			words[i] = str[i].charAt(0);
-		}
-		Arrays.sort(words);
-		answer = new StringBuilder();
+        n = Integer.parseInt(tokenizer.nextToken());
+        m = Integer.parseInt(tokenizer.nextToken());
 
-		solution(0, 0, new StringBuilder(), 0);
-		System.out.println(answer);
-		br.close();
-	}
+        tokenizer = new StringTokenizer(br.readLine());
+        arr = new char[m];
+        for(int i=0 ; i<m ; i++)
+            arr[i] = tokenizer.nextToken().charAt(0);
 
-	private static void solution(int depth, int start, StringBuilder path, int count){
-		if(depth == n){
-			if(count >= 1 && path.length() - count >= 2)
-				answer.append(path.toString()).append("\n");
-			return;
-		}
+        Arrays.sort(arr);
+        
+        StringBuilder answer = new StringBuilder();
+        dfs(0, 0, 0, answer, new StringBuilder());
+        System.out.print(answer);
+        br.close();
+    }
 
-		for(int i=start ; i<m ; i++){
-			if(visit[i])continue;
-			visit[i] = true;
-			path.append(words[i]);
-			if(vowels.containsKey(words[i]))solution(depth + 1, i + 1, path, count + 1);
-			else solution(depth + 1, i + 1, path, count);
-			path.deleteCharAt(depth);
-			visit[i] = false;
-		}
-	}
+    static void dfs(int start, int vowelCount, int exist, StringBuilder answer, StringBuilder path){
+        if(n == path.length()){
+            if(vowelCount >= 1 && n - vowelCount >= 2)
+                answer.append(path).append("\n");
+            return;
+        }
+
+        for(int i=start ; i<m ; i++){
+            if((exist & (1 << (arr[i] - 'a'))) != 0)
+                continue;
+
+            int nextVowel = isVowel(arr[i]) ? vowelCount + 1 : vowelCount;
+
+            path.append(arr[i]);
+            dfs(i + 1, nextVowel, exist | (1 << arr[i] - 'a'), answer, path);
+            path.deleteCharAt(path.length() - 1);
+        };
+    }
+    
+    static boolean isVowel(char ch){
+        for(int i=0 ; i<5 ; i++)
+            if(vowel[i] == ch)
+                return true;
+        return false;
+    }
 }
