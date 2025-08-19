@@ -2,25 +2,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 class Main {
 
     static class Trie {
         char ch;
         boolean isLeaf;
-        Map<Character, Trie> child;
+        Trie[] child;
 
         public Trie() {
             isLeaf = false;
-            child = new HashMap<>();
+            child = new Trie[10];
         }
 
         public Trie(char ch) {
             this.ch = ch;
             isLeaf = false;
-            child = new HashMap<>();
+            child = new Trie[10];
         }
     }
 
@@ -67,10 +65,10 @@ class Main {
 
         char ch = phoneNumber.charAt(idx);
 
-        if(!parent.child.containsKey(ch)){
-            parent.child.put(ch, new Trie(ch));
+        if(parent.child[ch - '0'] == null){
+            parent.child[ch - '0'] = new Trie(ch);
         }
 
-        return trie(parent.child.get(ch), idx + 1, phoneNumber);
+        return trie(parent.child[ch - '0'], idx + 1, phoneNumber);
     }
 }
