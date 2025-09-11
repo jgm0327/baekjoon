@@ -1,73 +1,55 @@
 import java.util.*;
 
 class Solution {
-    class Node{
+    
+    class Word{
         int dist;
-        String value;
+        long visit;
+        String val;
         
-        public Node(int dist, String value){
+        public Word(int dist, long visit, String val){
             this.dist = dist;
-            this.value = value;
+            this.visit = visit;
+            this.val = val;
         }
     }
     
     public int solution(String begin, String target, String[] words) {
-        int answer = 0;
-        
-        return bfs(begin, target, words);
-    }
-    
-    private int bfs(String begin, String target, String[] words){
-        Queue<Node> que = new ArrayDeque<>();
-        que.add(new Node(0, begin));
+        Queue<Word> que = new ArrayDeque<>();
+        que.add(new Word(0, 0, begin));
         
         Map<String, Boolean> visit = new HashMap<>();
+        visit.put(begin, true);
         
         while(!que.isEmpty()){
-            Node node = que.poll();
+            Word cur = que.poll();
             
-            List<String> list = getNextWords(node.value, words, visit);
-            
-            for(String word : list){
+            for(String word : words){
+                if(visit.containsKey(word) || !onlyOneDifferent(word, cur.val))
+                    continue;
                 
-                if(word.equals(target))
-                    return node.dist + 1;
+                if(target.equals(word))
+                    return cur.dist + 1;
                 
+                que.add(new Word(cur.dist + 1, 0, word));
                 visit.put(word, true);
-                que.add(new Node(node.dist + 1, word));
             }
-            
         }
         
         return 0;
     }
     
-    private List<String> getNextWords(String sour, String[] words, Map<String, Boolean> visit){
-        List<String> list = new ArrayList<>();
-        
-        for(String word : words){
-            if(visit.containsKey(word) || !differentOneWordCharacterBetweenTwoWord(sour, word))
-                continue;
-            
-            list.add(word);
-        }
-        
-        return list;
-    }
-    
-    private boolean differentOneWordCharacterBetweenTwoWord(String sour, String target){
+    private boolean onlyOneDifferent(String word1, String word2){
         int cnt = 0;
         
-        for(int i=0 ; i<sour.length() ; i++){
-            if(sour.charAt(i) == target.charAt(i))
-                continue;
+        for(int i=0 ; i<word1.length() ; i++){
+            if(word1.charAt(i) != word2.charAt(i))
+                cnt++;
             
-            if(cnt == 1)
-                return false;
-            
-            cnt++;
+            if(cnt >= 2)
+                break;
         }
         
-        return true;
+        return cnt == 1;
     }
 }
