@@ -23,12 +23,12 @@ class Main {
         }
 
         alreadyHere = new boolean[n][n];
-        System.out.println(dfs(0, 0, 0, 0));
+        System.out.println(dfs(0, 0));
 
         br.close();
     }
 
-    static int dfs(int depth, int startY, int startX, int total){
+    static int dfs(int depth, int total){
         if(depth == 3){
             return total;
         }
@@ -40,30 +40,30 @@ class Main {
                 if(alreadyHere[y][x] || cost == Integer.MAX_VALUE)
                     continue;
 
+                setAlreadyHere(y, x);
+
                 int r;
-                alreadyHere[y][x] = true;
-                for(int i=0 ; i<4 ; i++){
-                    int ny = y + dy[i], nx = x + dx[i];
-
-                    alreadyHere[ny][nx] = true;
-                }
                 if(x == n - 1)
-                    r = dfs(depth + 1, y + 1, 0, total + cost);
+                    r = dfs(depth + 1, total + cost);
                 else
-                    r = dfs(depth + 1, y, x + 1, total + cost);
+                    r = dfs(depth + 1, total + cost);
 
-                alreadyHere[y][x] = false;
-                for(int i=0 ; i<4 ; i++){
-                    int ny = y + dy[i], nx = x + dx[i];
-
-                    alreadyHere[ny][nx] = false;
-                }
+                setAlreadyHere(y, x);
 
                 ret = Math.min(ret, r);
             }
         }
 
         return Math.min(ret, Integer.MAX_VALUE);
+    }
+
+    static void setAlreadyHere(int y, int x){
+        alreadyHere[y][x] = !alreadyHere[y][x];
+        for(int i=0 ; i<4 ; i++){
+            int ny = y + dy[i], nx = x + dx[i];
+
+            alreadyHere[ny][nx] = !alreadyHere[ny][nx];
+        }
     }
 
     static int cantPlant(int y, int x) {
