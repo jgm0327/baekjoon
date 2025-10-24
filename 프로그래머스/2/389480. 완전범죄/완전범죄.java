@@ -1,31 +1,25 @@
 class Solution {
-    int maxValue = -1;
+    int answer;
+    boolean[][][] visit;
     public int solution(int[][] info, int n, int m) {
-        int totalB = 0;
-        for(int[] amount : info){
-            totalB += amount[1];
-        }
-        
-        if(totalB < m)
-            return 0;
-        
-        dfs(info, n, m, 0, new boolean[info.length][n + 1][m + 1]);
-        return maxValue == -1 ? -1 : n - maxValue;
+        answer = Integer.MAX_VALUE;
+        visit = new boolean[info.length + 1][n + 1][m + 1];
+        dfs(info, 0, 0, 0, n, m);
+        return answer == Integer.MAX_VALUE ? -1 : answer;
     }
     
-    private void dfs(int[][] info, int A, int B, int idx, boolean[][][] visit){
-        if(A <= 0 || B <= 0 || maxValue >= A || (idx < info.length && visit[idx][A][B]))
+    void dfs(int[][] info, int idx, int A, int B, int n, int m){
+        if(A >= n || B >= m || visit[idx][A][B])
             return;
-        
-        if(idx == info.length){
-            maxValue = Math.max(maxValue, A);
-            return;
-        }
         
         visit[idx][A][B] = true;
         
-        dfs(info, A - info[idx][0], B, idx + 1, visit);
-        dfs(info, A, B - info[idx][1], idx + 1, visit);
-    }
+        if(idx == info.length){
+            answer = Math.min(answer, A);
+            return;
+        }
         
+        dfs(info, idx + 1, A + info[idx][0], B, n, m);
+        dfs(info, idx + 1, A, B + info[idx][1], n, m);
+    }
 }
