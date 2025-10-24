@@ -1,41 +1,47 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
-class Main{
-
-    private static int cnt = -1, n;
-    private static long answer = -1;
-    public static void main(String[] args) throws IOException{
+class Main {
+    static int n;
+    static String answer;
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         n = Integer.parseInt(br.readLine());
+        answer = "-1";
+        if(n == 0)answer = "0";
+        else if(n == 1)answer = "1";
 
-        int digit = 1;
+        for(int i=1 ; i<=10 ; i++){
+            dfs(new StringBuilder(), i);
 
-        while(cnt != n && digit <= 10){
-            dfs(0, digit++, new StringBuilder());
+            if(n == 0)
+                break;
         }
 
         System.out.println(answer);
+
+        br.close();
     }
 
-    private static void dfs(int depth, int limit, StringBuilder number){
-        if(depth == limit){
-            cnt++;
-            if(cnt == n)
-                answer = Long.parseLong(number.toString());
+    static void dfs(StringBuilder path, int digit){
+        if(digit == 0){
+            n--;
+            if(n == 0)
+                answer = path.toString();
             return;
         }
 
         for(int i=0 ; i<10 ; i++){
-            if(number.length() > 0 && (number.charAt(number.length() - 1) - '0') <= i)
+            if((path.length() == 0 && i == 0) || (path.length() != 0 && path.charAt(path.length() - 1) - '0' <= i))
                 continue;
 
-            number.append(i);
-            dfs(depth + 1, limit, number);
-            if(answer != -1)return;
-            number.deleteCharAt(number.length() - 1);
+            path.append(i);
+            dfs(path, digit - 1);
+            if(n == 0)
+                return;
+            path.deleteCharAt(path.length() - 1);
         }
     }
+
 }
