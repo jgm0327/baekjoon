@@ -2,26 +2,20 @@ import java.util.*;
 
 class Solution {
     public int solution(int k, int[] tangerine) {
+        Map<Integer, Integer> numbers = new HashMap<>();
         int answer = 0;
-        Map<Integer, Integer> exist = new HashMap<>();
         
-        for(int weight : tangerine){
-            exist.put(weight, exist.getOrDefault(weight, 0) + 1);
+        for(int t : tangerine){
+            numbers.put(t, numbers.getOrDefault(t, 0) + 1);
+        }
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        for(int key : numbers.keySet()){
+            pq.add(numbers.get(key));
         }
         
-        List<Integer> list = new ArrayList<>();
-        for(int key : exist.keySet()){
-            list.add(exist.get(key));
-        }
-        Collections.sort(list, Collections.reverseOrder());
-        
-        int total = 0;
-        for(int i=0 ; i<list.size() ; i++){
-            total += list.get(i);
-            if(total  >= k){
-                answer = i + 1;
-                break;
-            }
+        while(k > 0){
+            answer++;
+            k -= pq.poll();
         }
         
         return answer;
