@@ -1,38 +1,37 @@
 import java.util.*;
 
 class Solution {
-    private boolean[][] visit;
-    
+    final int[] dy = {0, 0, 1, -1}, dx = {1, -1, 0, 0};
+    boolean[][] visit;
+    int n, m;
     public int[] solution(String[] maps) {
-        List<Integer> size = new ArrayList<>();
+        List<Integer> answer = new ArrayList<>();
+        n = maps.length;
+        m = maps[0].length();
         
-        visit = new boolean[maps.length][maps[0].length()];
-        for(int i=0 ; i<maps.length ; i++){
-            for(int j=0 ; j<maps[i].length() ; j++){
+        visit = new boolean[n][m];
+        for(int i=0 ; i<n ; i++){
+            for(int j=0 ; j<m ; j++){
                 if(visit[i][j] || maps[i].charAt(j) == 'X')
                     continue;
                 
-                size.add(bfs(i, j, maps));
+                answer.add(bfs(i, j, maps));
             }
         }
         
-        if(size.size() == 0)
-            size.add(-1);
+        if(answer.size() == 0)
+            answer.add(-1);
         
-        Collections.sort(size);
-        
-        return size.stream().mapToInt(i->i).toArray();
+        Collections.sort(answer);
+        return answer.stream().mapToInt(i->i).toArray();
     }
     
-    private int bfs(int sy, int sx, String[] maps){
+    int bfs(int startY, int startX, String[] maps){
+        visit[startY][startX] = true;
         Queue<int[]> que = new ArrayDeque<>();
-        que.add(new int[]{sy, sx});
+        que.add(new int[]{startY, startX});
         
-        visit[sy][sx] = true;
-        int[] dy = {0,0,1,-1}, dx = {1,-1,0,0};
-        
-        int ret = maps[sy].charAt(sx) - '0';
-        
+        int ret = maps[startY].charAt(startX) - '0';
         while(!que.isEmpty()){
             int[] cur = que.poll();
             
@@ -40,17 +39,16 @@ class Solution {
             
             for(int i=0 ; i<4 ; i++){
                 int ny = y + dy[i], nx = x + dx[i];
-
-                if(0 > ny || ny >= maps.length || 0 > nx || nx >= maps[0].length() 
+                
+                if(0 > ny || ny >= n || 0 > nx || nx >= m 
                    || visit[ny][nx] || maps[ny].charAt(nx) == 'X')
                     continue;
-
+                
                 visit[ny][nx] = true;
                 ret += maps[ny].charAt(nx) - '0';
                 que.add(new int[]{ny, nx});
             }
         }
-        
         return ret;
     }
 }
