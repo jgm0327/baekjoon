@@ -2,44 +2,44 @@ import java.io.*;
 import java.util.*;
 
 class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String args[]) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
         StringTokenizer tokenizer = new StringTokenizer(br.readLine());
-
         int n = Integer.parseInt(tokenizer.nextToken());
         int m = Integer.parseInt(tokenizer.nextToken());
 
-        Map<Integer, Integer> prefix = new HashMap<>();
-        int[] heights = new int[n];
-
+        int[] heights = new int[n + 1];
         tokenizer = new StringTokenizer(br.readLine());
-        for(int i=0 ; i<n ; i++){
+        for(int i=1 ; i<=n ; i++)
             heights[i] = Integer.parseInt(tokenizer.nextToken());
-        }
-
-        for(int i=0 ; i<m ; i++){
+        
+        Map<Integer, Integer> prefix = new HashMap<>();
+        while(m-- > 0){
             tokenizer = new StringTokenizer(br.readLine());
 
             int start = Integer.parseInt(tokenizer.nextToken());
             int end = Integer.parseInt(tokenizer.nextToken());
-            int h = Integer.parseInt(tokenizer.nextToken());
+            int value = Integer.parseInt(tokenizer.nextToken());
 
-            prefix.put(start, prefix.getOrDefault(start, 0) + h);
-            prefix.put(end + 1, prefix.getOrDefault(end + 1, 0) - h);
+            prefix.put(start, prefix.getOrDefault(start, 0) + value);
+            prefix.put(end + 1, prefix.getOrDefault(end + 1, 0) - value);
+        }
+
+        int total = 0;
+        for(int i=1 ; i<=n ; i++){
+            if(prefix.containsKey(i))
+                total += prefix.get(i);
+
+            heights[i] += total;
         }
 
         StringBuilder answer = new StringBuilder();
-        int total = 0;
-        for(int i=0 ; i<n ; i++){
-            total += prefix.getOrDefault(i + 1, 0);
-
-            answer.append(total + heights[i]).append(" ");
+        for(int i=1 ; i<=n ; i++){
+            answer.append(heights[i]).append(" ");
         }
 
-        bw.write(answer.toString());
-        bw.close();
+        System.out.println(answer);
+
         br.close();
     }
 }
