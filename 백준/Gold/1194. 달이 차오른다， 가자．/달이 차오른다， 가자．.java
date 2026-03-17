@@ -1,71 +1,68 @@
 import java.io.*;
 import java.util.*;
 
-class Main{
-    private static char[][] board;
-    private static int n, m;
+class Main {
+    static int n, m;
+    static char[][] board;
 
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
+    public static void main(String args[]) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String[] split = br.readLine().split(" ");
         n = Integer.parseInt(split[0]);
         m = Integer.parseInt(split[1]);
-        board = new char[n][m];
 
         int[] start = new int[2];
-        for(int i=0 ; i<n ; i++){
+        board = new char[n][m];
+        for (int i = 0; i < n; i++) {
             String str = br.readLine();
-
-            for(int j=0 ; j<m ; j++){
+            for (int j = 0; j < m; j++) {
                 board[i][j] = str.charAt(j);
-                if(board[i][j] == '0') start = new int[]{i, j};
+
+                if (board[i][j] == '0')
+                    start = new int[] { i, j };
             }
         }
 
-        bw.write(String.valueOf(bfs(start)));
-		bw.close();
-		br.close();
-	}
+        System.out.println(bfs(start[0], start[1]));
 
-    private static int bfs(int[] start){
+        br.close();
+    }
+
+    static int bfs(int startY, int startX) {
         Queue<int[]> que = new ArrayDeque<>();
-        que.add(new int[]{start[0], start[1], 0, 0});
+        // y, x, dist, containsKey
+        que.add(new int[] { startY, startX, 0, 0 });
+        int size = (1 << 7) - 1;
 
-        boolean[][][] visit = new boolean[n][m][65];
-        visit[start[0]][start[1]][0] = true;
+        boolean[][][] visit = new boolean[n][m][size];
+        visit[startY][startX][0] = true;
 
-        int[] dy = {0, 0, 1, -1}, dx = {-1, 1, 0, 0};
+        int[] dy = { 0, 0, 1, -1 }, dx = { 1, -1, 0, 0 };
 
-        while(!que.isEmpty()){
+        while (!que.isEmpty()) {
             int[] cur = que.poll();
 
-            int y = cur[0], x = cur[1], dist = cur[2], key = cur[3];
-
+            int y = cur[0], x = cur[1], dist = cur[2], keys = cur[3];
             for(int i=0 ; i<4 ; i++){
-                int ny = y + dy[i], nx = x + dx[i], nextKey = key;
-
-                if(0 > ny || ny >= n || 0 > nx || nx >= m || visit[ny][nx][nextKey] || board[ny][nx] == '#')
-                    continue;
-
-                char ch = board[ny][nx];
-                if('A' <= ch && ch <= 'F' && (key & (1 << (ch - 'A'))) == 0)
-                    continue;
+                int ny = y + dy[i], nx = x + dx[i];
                 
-                if('a' <= ch && ch <= 'f'){
-                    nextKey |= (1 << (ch - 'a'));
-                }
+                if(0 > ny || ny >= n || 0 > nx || nx >= m || board[ny][nx] == '#' || visit[ny][nx][keys])
+                    continue;
 
-                if(ch == '1')
+                if(board[ny][nx] == '1')
                     return dist + 1;
-                
-                que.add(new int[]{ny, nx, dist + 1, nextKey});
+
+                int nextKey = keys;
+                if('a' <= board[ny][nx] && board[ny][nx] <= 'f')
+                    nextKey |= (1 << (board[ny][nx] - 'a'));
+                else if(('A' <= board[ny][nx] && board[ny][nx] <= 'F') && (nextKey & (1 << (board[ny][nx] - 'A'))) == 0)
+                    continue;
+
                 visit[ny][nx][nextKey] = true;
+                que.add(new int[]{ny, nx, dist + 1, nextKey});
             }
         }
 
         return -1;
     }
-
 }
