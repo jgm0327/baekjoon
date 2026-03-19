@@ -63,7 +63,7 @@ class Main {
             return 0;
 
         int ret = 0;
-        int size = board[r][c] - 1;
+        int size = board[r][c];
         while(0 <= c && c < m && 0 <= r && r < n && size > 0){
             size--;
             if(!isFallen[r][c]){
