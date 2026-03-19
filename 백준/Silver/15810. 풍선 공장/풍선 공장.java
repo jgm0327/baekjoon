@@ -1,10 +1,8 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-class Main{
-    public static void main(String[] args) throws IOException{
+class Main {
+    public static void main(String args[]) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         StringTokenizer tokenizer = new StringTokenizer(br.readLine());
@@ -12,31 +10,28 @@ class Main{
         int n = Integer.parseInt(tokenizer.nextToken());
         int m = Integer.parseInt(tokenizer.nextToken());
 
-        int[] times = new int[n];
         tokenizer = new StringTokenizer(br.readLine());
+        int[] ballons = new int[n];
+        for (int i = 0; i < n; i++)
+            ballons[i] = Integer.parseInt(tokenizer.nextToken());
 
-        for(int i=0 ; i<n ; i++){
-            times[i] = Integer.parseInt(tokenizer.nextToken());
-        }
-
-        long left = 1, right = 1000000000000L;
-
-        while(left <= right){
+        long left = 0, right = 1_000_000_000_000L;
+        while (left <= right) {
             long mid = (left + right) / 2;
 
             long total = 0;
-            for(int i=0 ; i<n ; i++){
-                total += (mid / times[i]);
+            for (int i = 0; i < n; i++) {
+                total += mid / ballons[i];
             }
 
-            if(total >= m){
+            if (total >= m)
                 right = mid - 1;
-            }else{
+            else
                 left = mid + 1;
-            }
         }
 
         System.out.println(left);
-    }
 
+        br.close();
+    }
 }
