@@ -5,7 +5,6 @@ class Main {
     static int n;
     static int[] pre, last;
     static boolean[][] order;
-    static List<Integer>[] graph;
 
     public static void main(String args[]) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -14,10 +13,6 @@ class Main {
         StringBuilder answer = new StringBuilder();
         while (T-- > 0) {
             n = Integer.parseInt(br.readLine());
-
-            graph = new ArrayList[n + 1];
-            for (int i = 1; i <= n; i++)
-                graph[i] = new ArrayList<>();
 
             StringTokenizer tokenizer = new StringTokenizer(br.readLine());
             last = new int[n + 1];
@@ -31,7 +26,6 @@ class Main {
                 for (int j = i + 1; j <= n; j++) {
                     pre[last[j]]++;
                     prefix[last[j]]++;
-                    graph[last[i]].add(last[j]);
                     order[last[i]][last[j]] = true;
                 }
             }
@@ -48,13 +42,11 @@ class Main {
                     pre[b]--;
                     order[a][b] = false;
                     order[b][a] = true;
-                    graph[b].add(a);
                 } else {
                     pre[a]--;
                     pre[b]++;
                     order[a][b] = true;
                     order[b][a] = false;
-                    graph[a].add(b);
                 }
             }
 
@@ -89,7 +81,7 @@ class Main {
             int num = que.poll();
 
             list.add(num);
-            for (int next : graph[num]) {
+            for (int next=1 ; next<=n ; next++) {
                 if(!order[num][next])
                     continue;
 
