@@ -28,7 +28,7 @@ class Main {
                 answer = Math.max(answer, dfs(i, j));
             }
         }
-        System.out.println(answer + 1);
+        System.out.println(answer);
 
         br.close();
     }
@@ -37,7 +37,7 @@ class Main {
         if(dp[y][x] != -1)
             return dp[y][x];
 
-        dp[y][x] = 0;
+        dp[y][x] = 1;
         for(int i=0 ; i<4 ; i++){
             int ny = y + dy[i], nx = x + dx[i];
 
