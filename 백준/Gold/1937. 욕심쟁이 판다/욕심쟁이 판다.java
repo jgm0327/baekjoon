@@ -1,56 +1,52 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.*;
+import java.util.*;
 
-class Main{
+class Main {
+    static int n;
+    static int[] dy = { 0, 0, 1, -1 }, dx = { 1, -1, 0, 0 };
+    static int[][] board;
+    static int[][] dp;
 
-  private static int n;
-  private static int[][] map, dp;
-  private static final int[] dy = {0,0,-1,1}, dx = {1,-1,0,0};
+    public static void main(String args[]) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-  public static void main(String[] args) throws IOException{
-    init();
-    solution();
-  }
+        n = Integer.parseInt(br.readLine());
 
-  private static void init() throws IOException{
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    n = Integer.parseInt(br.readLine());
+        board = new int[n][n];
+        dp = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            StringTokenizer tokenizer = new StringTokenizer(br.readLine());
+            Arrays.fill(dp[i], -1);
+            for (int j = 0; j < n; j++){
+                board[i][j] = Integer.parseInt(tokenizer.nextToken());
+            }
+        }
 
-    map = new int[n][n];
-    dp = new int[n][n];
-    for(int i=0 ; i<n ; i++){
-      String[] values = br.readLine().split(" ");
-      for(int j=0 ; j<n ; j++){
-        map[i][j] = Integer.parseInt(values[j]);
-      }
+        int answer = 0;
+        for(int i=0 ; i<n ; i++){
+            for(int j=0 ; j<n ; j++){
+                answer = Math.max(answer, dfs(i, j));
+            }
+        }
+        System.out.println(answer + 1);
+
+        br.close();
     }
 
-    br.close();
-  }
+    static int dfs(int y, int x){
+        if(dp[y][x] != -1)
+            return dp[y][x];
 
-  private static void solution(){
-    int answer = 0;
-    for(int i=0 ; i<n ; i++){
-      for(int j=0 ; j<n ; j++){
-        answer = Math.max(dfs(i, j), answer);
-      }
+        dp[y][x] = 0;
+        for(int i=0 ; i<4 ; i++){
+            int ny = y + dy[i], nx = x + dx[i];
+
+            if(0 > ny || ny >= n || 0 > nx || nx >= n || board[y][x] >= board[ny][nx])
+                continue;
+
+            dp[y][x] = Math.max(dp[y][x], dfs(ny, nx) + 1);
+        }
+
+        return dp[y][x];
     }
-    System.out.println(answer);
-  }
-
-  private static int dfs(int y, int x){
-    if(dp[y][x] != 0)return dp[y][x];
-
-    dp[y][x] = 1;
-
-    for(int i=0 ; i<4 ; i++){
-      int ny = y + dy[i], nx = x + dx[i];
-      if(ny < 0 || ny >= n || nx < 0 || nx >= n || map[y][x] >= map[ny][nx])continue;
-      dp[y][x] = Math.max(dp[y][x], dfs(ny, nx) + 1);
-    }
-    return dp[y][x];
-  }
 }
