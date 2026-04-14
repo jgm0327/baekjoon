@@ -27,8 +27,6 @@ class Main {
 
                 if (index - 1 > mid && Math.abs(total + liquid[index - 1]) < Math.abs(total + liquid[index]))
                     right = index - 1;
-                if (index + 1 < n && Math.abs(total + liquid[index + 1]) < Math.abs(total + liquid[right]))
-                    right = index + 1;
 
                 if (minValue > Math.abs(total + liquid[right])) {
                     minValue = Math.abs(total + liquid[right]);
