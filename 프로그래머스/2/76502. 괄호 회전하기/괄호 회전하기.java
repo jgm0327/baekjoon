@@ -2,32 +2,35 @@ import java.util.*;
 
 class Solution {
     public int solution(String s) {
+        StringBuilder str = new StringBuilder(s);
         int answer = 0;
-        int n = s.length();
-        
-        for(int start=0 ; start < n ; start++){
-            ArrayDeque<Character> stk = new ArrayDeque<>();
-            boolean flag = true;
-            
-            for(int i=start ; i<start + n ; i++){
-                char ch = s.charAt(i % n);
-                
-                if(stk.isEmpty() || ch == '(' || ch == '{' || ch == '[' )
-                    stk.add(ch);
-                else if(ch == ')' && stk.peekLast() == '(')
-                    stk.pollLast();
-                else if(ch == '}' && stk.peekLast() == '{')
-                    stk.pollLast();
-                else if(ch == ']' && stk.peekLast() == '[')
-                    stk.pollLast();
-                else{
-                    flag = false;
-                    break;
-                }
+        for(int i=0 ; i<str.length() ; i++){
+            if(check(str.toString())){
+                answer++;
             }
-            
-            if(flag && stk.isEmpty())answer++;
+            char ch = str.charAt(0);
+            str.deleteCharAt(0);
+            str.append(ch);
         }
         return answer;
+    }
+    
+    static boolean check(String str){
+        ArrayDeque<Character> stk = new ArrayDeque<>();
+        for(int i=0 ; i<str.length(); i++){
+            char ch = str.charAt(i);
+            if(stk.isEmpty() || ch == '(' || ch == '{' || ch == '[')
+                stk.add(ch);
+            else if(ch == ']' && stk.peekLast() == '[')
+                stk.pollLast();
+            else if(ch == '}' && stk.peekLast() == '{')
+                stk.pollLast();
+            else if(ch == ')' && stk.peekLast() == '(')
+                stk.pollLast();
+            else
+                return false;
+        }
+        
+        return stk.isEmpty();
     }
 }
