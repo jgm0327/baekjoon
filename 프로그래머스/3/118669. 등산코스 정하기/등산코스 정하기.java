@@ -1,89 +1,89 @@
 import java.util.*;
 
 class Solution {
-    private List<int[]>[] graph;
-    private Map<Integer, Boolean> gateNumbers, summitNumbers;
+    List<int[]>[] graph;
     
     public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
+        int[] answer = {0, 0};
         graph = new ArrayList[n + 1];
         for(int i=0 ; i<=n ; i++)
             graph[i] = new ArrayList<>();
         
-        int maxValue = 0, minValue = Integer.MAX_VALUE;
+        int right = 0, left = Integer.MAX_VALUE;
         for(int[] path : paths){
-            graph[path[0]].add(new int[]{path[1], path[2]});
-            graph[path[1]].add(new int[]{path[0], path[2]});
+            int a = path[0], b = path[1], d = path[2];
+            graph[a].add(new int[]{b, d});
+            graph[b].add(new int[]{a, d});
             
-            maxValue = Math.max(maxValue, path[2]);
-            minValue = Math.min(minValue, path[2]);      
+            right = Math.max(right, d);
+            left = Math.min(left, d);
         }
-        
-        gateNumbers = new HashMap<>();
-        for(int gate : gates){
-            gateNumbers.put(gate, true);
-        }
-        
-        summitNumbers = new HashMap<>();
-        for(int summit : summits){
-            summitNumbers.put(summit, true);
-        }
-        
-        int left = minValue, right = maxValue;
-        int number = Integer.MAX_VALUE, intensity = Integer.MAX_VALUE;
-        
+        Arrays.sort(gates);
         Arrays.sort(summits);
+        
         while(left <= right){
             int mid = (left + right) / 2;
             
-            boolean exist = false;
-            for(int summit : summits){
-                if(dijkstra(summit, mid, n)){
-                    intensity = mid;
-                    number = summit;
-                    exist = true;
+            boolean flag = false;
+            int start = 0;
+            for(int num : summits){
+                if(bfs(num, mid, gates, summits)){
+                    start = num;
+                    flag = true;
                     break;
                 }
             }
             
-            if(exist)
+            if(flag){
                 right = mid - 1;
+                answer[0] = start;
+                answer[1] = mid;
+            }
             else
                 left = mid + 1;
         }
         
-        return new int[]{number, intensity};
+        return answer;
     }
     
-    private boolean dijkstra(int start, int k, int n){
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]);
-        pq.add(new int[]{start, 0});
+    boolean bfs(int start, int max, int[] gates, int[] summits){
+        Queue<Integer> que = new ArrayDeque<>();
+        que.add(start);
         
-        int[] costs = new int[n + 1];
-        Arrays.fill(costs, Integer.MAX_VALUE);
-        costs[start] = 0;
+        boolean[] visit = new boolean[graph.length];
+        visit[start] = true;
         
-        while(!pq.isEmpty()){
-            int[] cur = pq.poll();
+        while(!que.isEmpty()){
+            int cur = que.poll();
             
-            int sour = cur[0], dist = cur[1];
-            if(costs[sour] < dist)
-                continue;
-            
-            for(int[] des : graph[sour]){
-                int number = des[0], nextCost = dist + des[1];
-                
-                if(nextCost >= costs[number] || summitNumbers.containsKey(number) 
-                   || des[1] > k)
+            for(int[] next : graph[cur]){
+                if(visit[next[0]] || binarySearch(next[0], summits) 
+                   || next[1] > max)
                     continue;
                 
-                if(gateNumbers.containsKey(number))
+                if(binarySearch(next[0], gates))
                     return true;
                 
-                costs[number] = nextCost;
-                pq.add(new int[]{number, nextCost});
+                visit[next[0]] = true;
+                que.add(next[0]);
             }
         }
         
+        return false;
+    }
+    
+    boolean binarySearch(int target, int[] arr){
+        int left = 0, right = arr.length - 1;
+        while(left <= right){
+            int mid = (left + right) / 2;
+            
+            if(target == arr[mid])
+                return true;
+            else if(target < arr[mid])
+                right = mid - 1;
+            else
+                left = mid + 1;
+        }
         return false;
     }
 }
