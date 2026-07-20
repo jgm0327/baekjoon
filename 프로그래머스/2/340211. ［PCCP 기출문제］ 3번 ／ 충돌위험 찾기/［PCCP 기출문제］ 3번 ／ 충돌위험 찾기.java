@@ -2,54 +2,54 @@ import java.util.*;
 
 class Solution {
     public int solution(int[][] points, int[][] routes) {
-        int answer = 0;
-        Map<Integer, Integer>[][] times = new HashMap[101][101];
-        for(int i=0 ; i<101 ; i++){
-            for(int j=0 ; j<101 ; j++){
-                times[i][j] = new HashMap<>();
-            }
+        int n = 0, m = 0;
+        for(int[] point : points){
+            n = Math.max(n, point[0]);
+            m = Math.max(m, point[1]);
+        }
+        
+        Map<Integer, Integer>[][] dp = new HashMap[n + 1][m + 1];
+        for(int i=1 ; i<=n ; i++){
+            for(int j=1 ; j<=m ; j++)
+                dp[i][j] = new HashMap<>();
         }
         
         for(int[] route : routes){
             int time = 0;
-            int y = points[route[0] - 1][0], x = points[route[0] - 1][1];
             
-            times[y][x].put(time, times[y][x].getOrDefault(time++, 0) + 1);
+            int a = route[0] - 1;
+            int y = points[a][0], x = points[a][1];
+            
+            dp[y][x].put(time, dp[y][x].getOrDefault(time, 0) + 1);
             for(int i=1 ; i<route.length ; i++){
-                int startY = points[route[i - 1] - 1][0], startX = points[route[i - 1] - 1][1];
-                int endY = points[route[i] - 1][0], endX = points[route[i] - 1][1];
-                
-                while(startY > endY){
-                    startY--;
-                    times[startY][startX].put(time, times[startY][startX].getOrDefault(time++, 0) + 1);
-                }
-                
-                while(startY < endY){
-                    startY++;
-                    times[startY][startX].put(time, times[startY][startX].getOrDefault(time++, 0) + 1);
-                }
-                
-                while(startX > endX){
-                    startX--;
-                    times[startY][startX].put(time, times[startY][startX].getOrDefault(time++, 0) + 1);
-                }
-                
-                while(startX < endX){
-                    startX++;
-                    times[startY][startX].put(time, times[startY][startX].getOrDefault(time++, 0) + 1);
+                int b = route[i] - 1;
+                int endY = points[b][0], endX = points[b][1];
+                while(endY != y || endX != x){
+                    if(endY > y)
+                        y++;
+                    else if(endY < y)
+                        y--;
+                    else if(endX < x)
+                        x--;
+                    else
+                        x++;
+
+                    time++;
+                    dp[y][x].put(time, dp[y][x].getOrDefault(time, 0) + 1);
                 }
             }
         }
         
-        for(int i=0 ; i<101 ; i++){
-            for(int j=0 ; j<101 ; j++){
-                for(int count : times[i][j].values()){
-                    if(count >= 2)
+        int answer = 0;
+        for(int i = 1 ; i <= n ; i++) {
+            for(int j = 1 ; j <= m ; j++) {
+                for(int count : dp[i][j].values()) {
+                    if(count > 1) {
                         answer++;
+                    }
                 }
             }
         }
-        
         return answer;
     }
 }
